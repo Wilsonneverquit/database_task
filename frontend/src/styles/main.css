@@ -1,0 +1,83 @@
+:root {
+  /* 风险等级色：低灰、中黄、高红（《前端交接文档》B1 原型要点） */
+  --level-low: #909399;
+  --level-low-bg: #f4f4f5;
+  --level-mid: #b88230;
+  --level-mid-bg: #fdf6ec;
+  --level-high: #d03050;
+  --level-high-bg: #fef0f0;
+
+  --hit-bg: #fff4e5;
+  --missing-bg: #f2f6fc;
+  --page-bg: #f5f7fa;
+  --card-border: #e4e7ed;
+  --text-muted: #909399;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #app {
+  margin: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #303133;
+  background: var(--page-bg);
+}
+
+.page { display: flex; flex-direction: column; gap: 16px; }
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.page-head h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.page-head .sub { margin: 4px 0 0; color: var(--text-muted); font-size: 13px; }
+
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+.card-title { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.card-title .hint { font-weight: 400; color: var(--text-muted); font-size: 12px; }
+
+.muted { color: var(--text-muted); }
+.mono { font-family: Consolas, 'SFMono-Regular', Menlo, monospace; }
+.num { font-variant-numeric: tabular-nums; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.stat {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.stat .label { color: var(--text-muted); font-size: 13px; }
+.stat .value { font-size: 28px; font-weight: 600; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.stat .foot { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+
+.two-col { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; }
+@media (max-width: 1100px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+
+/* 表格行高亮：命中 / 数据不足 */
+.el-table .row-hit { --el-table-tr-bg-color: var(--hit-bg); }
+.el-table .row-missing { --el-table-tr-bg-color: var(--missing-bg); }
+
+.formula {
+  font-family: Consolas, 'SFMono-Regular', Menlo, monospace;
+  background: #fafafa;
+  border: 1px dashed var(--card-border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 14px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.link { color: var(--el-color-primary); cursor: pointer; }
+.link:hover { text-decoration: underline; }
