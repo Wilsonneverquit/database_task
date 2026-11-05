@@ -31,6 +31,10 @@ export const BLOCK_ROLES = {
   'overview.clues': ['R_ANALYST', 'R_TEACHER'],
   'overview.risk': ['R_ANALYST', 'R_TEACHER'],
   'overview.eval': ['R_TEACHER'],
+  // 场景出现频度：只给聚合计数。案件频度对应"案例统计"，系统管理员与数据管理员不看；
+  // 饮酒消费频度来自信息库，数据管理员可看；系统管理员不看业务数据
+  'overview.freq.case': ['R_ANALYST', 'R_FEATURE', 'R_TEACHER'],
+  'overview.freq.consume': ['R_ANALYST', 'R_DATA', 'R_FEATURE', 'R_TEACHER'],
 }
 
 export function hasAny(userRoles, allowed) {

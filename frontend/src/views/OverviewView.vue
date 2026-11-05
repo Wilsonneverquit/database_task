@@ -42,6 +42,8 @@
       </div>
     </AsyncState>
 
+    <SceneHeatmap v-if="auth.canBlock('overview.freq.case') || auth.canBlock('overview.freq.consume')" />
+
     <div v-if="auth.canBlock('overview.risk') || auth.canBlock('overview.clues')" class="two-col">
       <el-card v-if="auth.canBlock('overview.risk')" shadow="never">
         <template #header>
@@ -90,6 +92,7 @@ import { pad2, percent } from '@/utils/format'
 import AsyncState from '@/components/AsyncState.vue'
 import EChart from '@/components/EChart.vue'
 import LevelTag from '@/components/LevelTag.vue'
+import SceneHeatmap from '@/components/SceneHeatmap.vue'
 import StatusTag from '@/components/StatusTag.vue'
 
 const router = useRouter()

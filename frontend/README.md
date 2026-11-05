@@ -97,6 +97,79 @@ src/
 | 页脚声明 + 数据健康灯 | `components/AppLayout.vue`、`components/HealthLight.vue` |
 | 不出现身份证、手机号、车牌明文 | 模拟库里不存姓名、手机号、车牌；个人对象只显示编号 |
 
+## 新增接口 25：场景出现频度
+
+首页"场景出现频度"热力图使用，交接文档中没有，请后端按下面实现。
+
+```
+GET /api/scene-frequency?source=case|consume&dim=place_type|area&day_type=&from=&to=
+```
+
+| 参数 | 说明 |
+|---|---|
+| `source` | `case` 历史案件（默认）/ `consume` 含酒水消费 |
+| `dim` | `place_type` 按场所类型（默认）/ `area` 按区域 |
+| `day_type` | 可空；1 工作日 / 2 周末 |
+| `from`、`to` | 可空；半开区间 `[from, to)`。`source=case` 时 `to` 不得晚于 `history_cutoff`，后端负责截断 |
+
+响应：
+
+```json
+{ "code": 0, "data": {
+  "source": "case", "dim": "place_type",
+  "x": [6, 7, 8, "…", 23, 0, 1, 2, 3, 4, 5],
+  "y": [ { "key": 1, "label": "饭店", "total": 4 }, { "key": 2, "label": "KTV", "total": 3 } ],
+  "cells": [ { "y": 1, "x": 22, "cnt": 2 } ],
+  "total": 10, "max": 2,
+  "history_cutoff": "2026-11-01 00:00:00",
+  "range": { "from": null, "to": "2026-11-01 00:00:00" }
+}}
+```
+
+- `x` 从 06 时排到次日 05 时，使 23 点与 0 点相邻。
+- `y` 按场所类型时固定为 饭店 / KTV / 酒吧 / 其他；只有存在 `place_id` 为空的案件时，才追加 `key=0`"未记录场所"。按区域时列出全部区域。
+- `cells` 只返回计数大于 0 的格子。
+- 只返回聚合计数，不返回任何明细。
+
+权限：
+
+| 数据源 | 可访问角色 | 无权时 |
+|---|---|---|
+| `case` | 研判员、特征管理员、教师 | 403 |
+| `consume` | 研判员、数据管理员、特征管理员、教师 | 403 |
+
+系统管理员两者都不可访问。
+
+SQL：
+
+```sql
+-- source=case, dim=place_type（只读视图，不读 case_info 原表）
+SELECT IFNULL(pl.place_type, 0) AS y, HOUR(c.occur_time) AS x, COUNT(*) AS cnt
+FROM v_case_history c
+LEFT JOIN place_info pl ON pl.place_id = c.place_id
+WHERE (? IS NULL OR c.occur_time >= ?) AND c.occur_time < ?   -- 第三个参数 = LEAST(to, history_cutoff)
+  AND (? IS NULL OR IF(DAYOFWEEK(c.occur_time) IN (1, 7), 2, 1) = ?)
+GROUP BY y, x;
+
+-- source=consume, dim=place_type
+SELECT pl.place_type AS y, HOUR(r.consume_time) AS x, COUNT(*) AS cnt
+FROM consume_record r
+JOIN place_info pl ON pl.place_id = r.place_id
+WHERE r.has_alcohol = 1
+  AND (? IS NULL OR r.consume_time >= ?) AND (? IS NULL OR r.consume_time < ?)
+  AND (? IS NULL OR IF(DAYOFWEEK(r.consume_time) IN (1, 7), 2, 1) = ?)
+GROUP BY y, x;
+```
+
+`dim=area` 时，把 `y` 换成 `c.area_id`（案件）或 `pl.area_id`（消费）。
+
+用示例库核对：
+
+| 数据源 | 总数 | 分布 |
+|---|---|---|
+| 历史案件 | 10 起 | 饭店 4、KTV 3、酒吧 2、其他 1；酒吧的 2 起都在 0 点 |
+| 含酒水消费 | 20 条 | 酒吧 23 点 5 条、饭店 22 点 4 条最集中 |
+
 ## 文档缺口与矛盾（请后端 / 数据库同学确认）
 
 | # | 问题 | 前端的处理 / 建议 |

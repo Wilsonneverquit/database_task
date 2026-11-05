@@ -90,4 +90,5 @@ export const api = {
   setParam: (key, body) => patch(`/api/params/${key}`, body), //              22
   cases: (p) => get('/api/cases', p), //                                      23
   health: () => get('/api/health'), //                                        24
+  sceneFrequency: (p) => get('/api/scene-frequency', p), //                   25（新增）
 }

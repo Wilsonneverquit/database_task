@@ -3,7 +3,7 @@
 // 后端写好后把 .env 里的 VITE_API_MODE 改成 real，这个文件就不再参与。
 
 import { createSeed } from './seed'
-import { ACTION_ROLES, PAGE_ROLES, hasAny } from '@/constants/permissions'
+import { ACTION_ROLES, BLOCK_ROLES, PAGE_ROLES, hasAny } from '@/constants/permissions'
 
 const STORAGE_KEY = 'risk_alert_mock_v1'
 const DEMO_PASSWORD = '123456'
@@ -709,6 +709,60 @@ route('GET', '/api/cases', (ctx) => {
     .sort((a, b) => a.occur_time.localeCompare(b.occur_time))
     .map((c) => ({ ...c, area_name: areaName(c.area_id), occur_hour: parseTime(c.occur_time).getHours() }))
   return ok({ ...paginate(rows, q), history_cutoff: historyCutoff(), case_info_total: db.case_info.length })
+})
+
+// 25. 场景出现频度（新增，见 README）：场景 × 小时的计数，只返回聚合结果
+// source=case 只读 v_case_history 且截止不晚于 history_cutoff；source=consume 统计含酒水消费
+const FREQ_HOURS = [...Array.from({ length: 18 }, (_, i) => i + 6), 0, 1, 2, 3, 4, 5] // 06 时排到次日 05 时，夜间连续
+const PLACE_TYPE_LABEL = { 1: '饭店', 2: 'KTV', 3: '酒吧', 4: '其他', 0: '未记录场所' }
+
+route('GET', '/api/scene-frequency', (ctx) => {
+  const q = ctx.query
+  const source = q.source || 'case'
+  const dim = q.dim || 'place_type'
+  if (!['case', 'consume'].includes(source)) bad('source 只能是 case 或 consume')
+  if (!['place_type', 'area'].includes(dim)) bad('dim 只能是 place_type 或 area')
+  if (!empty(q.day_type) && ![1, 2].includes(Number(q.day_type))) bad('day_type 只能是 1 或 2')
+  requireRole(ctx, BLOCK_ROLES[`overview.freq.${source}`])
+
+  const cutoff = historyCutoff()
+  const from = empty(q.from) ? null : q.from
+  let to = empty(q.to) ? null : q.to
+  if (source === 'case' && (!to || to > cutoff)) to = cutoff
+
+  const placeOf = (id) => db.place_info.find((p) => p.place_id === id)
+  const events = source === 'case'
+    ? vCaseHistory().map((c) => ({ t: c.occur_time, place: placeOf(c.place_id), area_id: c.area_id }))
+    : db.consume_record.filter((r) => r.has_alcohol === 1).map((r) => {
+      const place = placeOf(r.place_id)
+      return { t: r.consume_time, place, area_id: place?.area_id }
+    })
+
+  const counts = new Map()
+  for (const e of events) {
+    if (!inRange(e.t, from, to)) continue
+    if (!empty(q.day_type) && dayTypeOf(e.t) !== Number(q.day_type)) continue
+    const y = dim === 'place_type' ? (e.place?.place_type ?? 0) : e.area_id
+    const key = `${y}|${parseTime(e.t).getHours()}`
+    counts.set(key, (counts.get(key) || 0) + 1)
+  }
+
+  const cells = [...counts].map(([key, cnt]) => {
+    const [y, x] = key.split('|')
+    return { y: dim === 'place_type' ? Number(y) : y, x: Number(x), cnt }
+  })
+  const totalOf = (key) => cells.filter((c) => c.y === key).reduce((s, c) => s + c.cnt, 0)
+  const y = dim === 'place_type'
+    ? [1, 2, 3, 4, 0].filter((k) => k !== 0 || totalOf(0) > 0).map((k) => ({ key: k, label: PLACE_TYPE_LABEL[k], total: totalOf(k) }))
+    : db.area_info.map((a) => ({ key: a.area_id, label: a.area_name, total: totalOf(a.area_id) }))
+
+  return ok({
+    source, dim, x: FREQ_HOURS, y, cells,
+    total: cells.reduce((s, c) => s + c.cnt, 0),
+    max: Math.max(0, ...cells.map((c) => c.cnt)),
+    history_cutoff: cutoff,
+    range: { from, to },
+  })
 })
 
 // 24. 数据健康检查（四项都应为 0）
