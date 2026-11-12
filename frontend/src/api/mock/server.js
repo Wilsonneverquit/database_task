@@ -5,7 +5,7 @@
 import { createSeed } from './seed'
 import { ACTION_ROLES, PAGE_ROLES, hasAny } from '@/constants/permissions'
 
-const STORAGE_KEY = 'risk_alert_mock_v1'
+const STORAGE_KEY = 'risk_alert_mock_v2'
 const DEMO_PASSWORD = '123456'
 
 let db = load()
