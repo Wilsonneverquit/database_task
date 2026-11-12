@@ -3,7 +3,7 @@
 > 配套文档：[数据库设计思路方案.md](数据库设计思路方案.md)｜建库脚本：[sql/risk_alert_示例库.sql](sql/risk_alert_示例库.sql)
 > 位置：全部表建在**一个库 `risk_alert`** 里，按"五组"管理。其中**案例库、特征库、信息库**是本项目的三库；研判线索库与安全支撑库是为闭环、评估和权限服务的辅助库。
 >
-> **本版结构**：26 张表 / 45 个外键 / 64 个 CHECK / 3 个触发器 / 2 个存储过程 / 3 个视图。
+> **本版结构**：26 张表 / 45 个外键 / 65 个 CHECK / 3 个触发器 / 2 个存储过程 / 3 个视图。
 > 字符集 `utf8mb4`，排序规则 `utf8mb4_0900_as_cs`（编码字段区分大小写，`'A01'` 与 `'a01'` 不是同一个键），引擎 InnoDB。
 >
 > **本版相对上一版改了什么**（全部是审查提的问题）：
@@ -135,6 +135,8 @@
 | area_name | VARCHAR(60) | 区域名称，界面与报表上的展示值（虚构） |
 | area_type | TINYINT CK 1~4 | 1 城市道路 2 商圈 3 乡镇 4 高速出入口。可分组看"哪类区域风险高" |
 | parent_area_id | VARCHAR(12) FK 自关联 | 上级区域，支持"街道 → 片区"逐级汇总 |
+| lng | DECIMAL(10,6) CK ±180 | 区域中心点经度（虚构坐标），供前端风险地图定位用 |
+| lat | DECIMAL(10,6) CK ±90 | 区域中心点纬度（虚构坐标），供前端风险地图定位用 |
 | is_active | TINYINT | 1 启用 0 停用。停用后不再产生新数据，历史外键仍然成立 |
 | created_at | DATETIME | 创建时间，追溯"这批数据什么时候进库" |
 
@@ -711,7 +713,7 @@ UPDATE feature_def SET match_src = 'case_info' WHERE feature_id = 'F003';
 
 | 场景 | 重跑前 | 重跑后 | 说明 |
 | --- | --- | --- | --- |
-| A02（线索已确认） | 6.03 | **6.03** | 被跳过，核查结论不受影响 |
+| A02（线索已确认） | 6.15 | **6.15** | 被跳过，核查结论不受影响 |
 | A05（无线索） | 2.93 | **9.99**（测试值） | 正常覆盖 |
 
 **为什么这样就"冻结"了**：评分行不动 → 明细行不动 → `v_clue_list` 展示的分数和理由就不动。不需要在 `risk_clue` 里再存一份快照。
@@ -856,17 +858,22 @@ VALUES ('V20261101_03',1,'2.1',1,'U0009');
 
 ---
 
-## 附录：示例库规模（26 张表，259 行）
+## 附录：示例库规模（26 张表，6477 行）
 
 | 组 | 行数 |
 | --- | --- |
-| 安全支撑库 | sys_role 5、sys_user 10、sys_user_role 10、audit_log 10、param_config 10 |
-| 案例库 | area_info 10、place_info 10、person_info 10、vehicle_owner 10、case_info 10、control_person 10 |
-| 信息库 | consume_record 23、taxi_order 12、vehicle_track 26 |
+| 安全支撑库 | sys_role 5、sys_user 10、sys_user_role 10、audit_log 107、param_config 10 |
+| 案例库 | area_info 12、place_info 30、person_info 546、vehicle_owner 187、case_info 200、control_person 400 |
+| 信息库 | consume_record 1344、taxi_order 361、vehicle_track 2018 |
 | 特征库 | feature_def 8、feature_version 3、feature_weight 8、judge_rule 3、rule_feature 12 |
-| 研判线索库 | judge_batch 10、risk_score 6、risk_score_feature 24、risk_clue 4、clue_feedback 3、clue_feedback_feature 2、eval_label 10 |
+| 研判线索库 | judge_batch 43、risk_score 178、risk_score_feature 681、risk_clue 78、clue_feedback 60、clue_feedback_feature 41、eval_label 122 |
 
-> 观察段的评分只有 6 条、线索 4 条，是刻意做小的：**宁可条数少，也不要出现"声称 42 个对象、实际 2 条评分"这种对不上的数**。要凑到十条线索，按同一模板再加两个区域的流水即可。
+> 数据由 `tools/gen_demo_data.py` 按"以案生数 + 两段切分"生成，固定随机种子，可复算。
+> 数据分两批生成，各自独立随机源：第一批 3219 行（v2.1），第二批 3258 行（本次追加），第一批**逐行未改**。
+> 规模口径：**200 起历史案件（7–10 月，两批各 100 起）+ 400 条对照样本**，现行权重仍按首批 100 起 / 200 条统计（`based_case_cnt` 可查）；
+> 观察段 8 个夜晚共 129 个区域时段对象，其中 48 条达到线索阈值；
+> 另有个人研判批次，49 个对象出 30 条线索。合计 78 条线索，覆盖待核查/核查中/已确认/已排除四种状态。
+> 每一项派生值（P1/P0/lift、总分、混淆矩阵）都能用库里的数据复算，没有手填数。
 
 ---
 

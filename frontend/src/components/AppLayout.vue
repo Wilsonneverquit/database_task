@@ -75,7 +75,13 @@ const auth = useAuthStore()
 
 const MENU = [
   { title: '概览', items: [{ path: '/', page: 'overview', title: '首页概览', code: 'A1', icon: 'Odometer' }] },
-  { title: '风险研判', items: [{ path: '/risk', page: 'risk', title: '区域时段风险', code: 'B1', icon: 'DataAnalysis' }] },
+  {
+    title: '风险研判',
+    items: [
+      { path: '/risk', page: 'risk', title: '区域时段风险', code: 'B1', icon: 'DataAnalysis' },
+      { path: '/risk-map', page: 'risk', title: '风险地图', code: 'B3', icon: 'MapLocation' },
+    ],
+  },
   { title: '线索管理', items: [{ path: '/clues', page: 'clues', title: '线索列表', code: 'C1', icon: 'Tickets' }] },
   {
     title: '特征库',

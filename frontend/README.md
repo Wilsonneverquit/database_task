@@ -1,6 +1,6 @@
 # 前端：多风险特征预警系统
 
-按《前端交接文档》实现的 12 个页面。后端未就绪时用前端内置的模拟数据运行，数据逐行取自 `sql/risk_alert_示例库.sql`。
+按《前端交接文档》实现的 13 个页面。后端未就绪时用前端内置的模拟数据运行，数据逐行取自 `sql/risk_alert_示例库.sql`。
 
 技术栈：Vue 3 + Vite + Element Plus + ECharts + Vue Router + Pinia。
 
@@ -22,8 +22,8 @@ npm run dev
 
 | 用户名 | 角色 | 能看到的页面 |
 |---|---|---|
-| analyst1 | 研判员 + 教师 | A1 B1 B2 C1 C2 D1 D2 D3 E1 E2 E4（线索可操作） |
-| analyst2 | 研判员 | A1 B1 B2 C1 C2（线索可操作） |
+| analyst1 | 研判员 + 教师 | A1 B1 B2 B3 C1 C2 D1 D2 D3 E1 E2 E4（线索可操作） |
+| analyst2 | 研判员 | A1 B1 B2 B3 C1 C2（线索可操作） |
 | featop | 特征管理员 | A1 D1 D2 D3 E4（特征、版本、批次可操作） |
 | admin | 系统管理员 | A1 D3 E2 E3（批次、参数可操作） |
 | teacher | 教师/评审 | 除 E3 外全部，只读 |
@@ -58,12 +58,12 @@ VITE_API_BASE=http://127.0.0.1:5000
 1. 用 `analyst1` 登录，打开**首页**：数字卡、热力图、最新线索。
 2. 点热力图里"老城餐饮街 · 周末 · 23 点"进入 **B2**，回答"为什么提示"：
    - 逐条特征判定；
-   - 公式 `1.1693 + 2.9285 + 1.9274 = 6.0252 ≈ 6.03`。
+   - 公式 `1.2098 + 2.9667 + 1.9725 = 6.1490 ≈ 6.15`。
 3. 打开**线索列表**，点 `CL2026110704`（核查中）走一遍 **C2** 闭环：
    - 点「排除」，填写核查方式和说明，勾选被否定的特征，提交；
    - 线索变为"已排除"，核查记录里出现被否定的特征。
 4. 打开**特征清单**，看双口径：训练源 `case_info` 与研判源分列，中间有竖线分隔。进入被否定的特征，「核查否定记录」里能看到刚才那条。
-5. 打开**评估报告**（E1），回答"怎么证明有效"：混淆矩阵 3/1/0/6，精确率 0.75，召回率 1.00，误报率 0.14，F1 0.86。
+5. 打开**评估报告**（E1），回答"怎么证明有效"：混淆矩阵 32/12/8/70，精确率 0.73，召回率 0.80，误报率 0.15，F1 0.76。
 6. 换 `featop` 登录，在**版本与批次**创建批次并执行研判。也可以重新执行失败的 `B2026110706`：它使用的草稿版本没有权重，会再次失败并说明原因。
 7. 页脚的"数据健康"小绿灯：鼠标悬停可看 4 项检查结果。
 
@@ -71,20 +71,20 @@ VITE_API_BASE=http://127.0.0.1:5000
 
 ```
 src/
-  api/index.js           请求封装（mock / real 同一路径）+ 24 个接口
-  api/mock/seed.js       示例库 26 张表、259 行数据
+  api/index.js           请求封装（mock / real 同一路径）+ 25 个接口
+  api/mock/seed.js       示例库 26 张表、6477 行数据（与 SQL 逐行同源）
   api/mock/server.js     模拟后端：路由、视图、触发器、存储过程、研判引擎
   constants/enums.js     枚举中文映射（页面不出现裸数字）
   constants/permissions.js  角色 → 页面 / 操作 权限矩阵
   components/            布局、等级/状态标签、特征判定表、线索抽屉、核查表单、图表、健康灯
-  views/                 12 个页面 + 登录 + 无权访问
+  views/                 13 个页面 + 登录 + 无权访问
 ```
 
 ## 与交接文档的对应
 
 | 交接文档要求 | 实现位置 |
 |---|---|
-| 12 个页面、路由 | `src/router/index.js`（C2 用抽屉挂在 `/clues/:clueId`） |
+| 12 个页面、路由 | `src/router/index.js`（C2 用抽屉挂在 `/clues/:clueId`；另有 B3 风险地图 `/risk-map`） |
 | 枚举中文映射 | `src/constants/enums.js` |
 | 按角色隐藏菜单与按钮（不是禁用） | `src/constants/permissions.js`、`AppLayout.vue`、各页面 `auth.can()` |
 | 未登录跳登录页、401 统一跳转 | `src/router/index.js`、`src/main.js` |
@@ -92,6 +92,7 @@ src/
 | C2 只显示合法流转按钮、核查时勾选被否定的特征 | `components/ClueDrawer.vue`、`components/FeedbackDialog.vue` |
 | D1 训练源 / 研判源并排，用竖线分隔 | `views/FeatureListView.vue` |
 | E1 指标取接口返回值，分母为 0 显示"—" | `views/EvalView.vue` |
+| B3 风险地图（红色深浅 + 可拖动时间轴） | `views/RiskMapView.vue`、`api/mock/server.js` 的 `/api/risk-map` |
 | 加载中 / 空数据 / 报错三种状态 | `components/AsyncState.vue` |
 | 日期半开区间传参 | `utils/format.js` 的 `halfOpenRange` |
 | 页脚声明 + 数据健康灯 | `components/AppLayout.vue`、`components/HealthLight.vue` |

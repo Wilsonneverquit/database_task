@@ -389,6 +389,49 @@ route('GET', '/api/region-risk', (ctx) => {
   return ok(paginate(rows, q))
 })
 
+// 25. 风险地图（接口契约新增）：区域坐标 + 按观察夜聚合的区域峰值风险，供地图页面与时间轴使用
+const AREA_TYPE_NAME = { 1: '城市道路', 2: '商圈', 3: '乡镇', 4: '高速出入口' }
+route('GET', '/api/risk-map', (ctx) => {
+  requireRole(ctx, PAGE_ROLES.risk)
+  const areas = db.area_info.map((a) => ({
+    area_id: a.area_id,
+    area_name: a.area_name,
+    area_type: a.area_type,
+    area_type_name: AREA_TYPE_NAME[a.area_type],
+    parent_area_id: a.parent_area_id,
+    lng: a.lng,
+    lat: a.lat,
+  }))
+  const batchOf = (id) => db.judge_batch.find((b) => b.batch_id === id)
+  // 观察夜 = 区域时段批次的研判数据窗口起始日期（一次研判对应一个观察夜）
+  const dateOf = (s) => {
+    const b = batchOf(s.batch_id)
+    return b ? b.data_start.slice(0, 10) : null
+  }
+  const rows = db.risk_score.filter((s) => s.object_type === 1)
+  const dates = [...new Set(rows.map(dateOf).filter(Boolean))].sort()
+  const risk = dates.map((date) => {
+    const byArea = {}
+    rows.filter((s) => dateOf(s) === date).forEach((s) => {
+      const cur = byArea[s.area_id]
+      // 同一区域当夜可能存在多个"日期类型 × 时段"对象，取峰值总分作为该区域的代表风险
+      if (!cur || s.total_score > cur.total_score) {
+        byArea[s.area_id] = {
+          area_id: s.area_id,
+          total_score: s.total_score,
+          risk_level: s.risk_level,
+          risk_level_name: levelName(s.risk_level),
+          hit_cnt: db.risk_score_feature.filter((x) => x.score_id === s.score_id && x.is_hit === 1).length,
+          sample_size: s.sample_size,
+          batch_id: s.batch_id,
+        }
+      }
+    })
+    return { date, areas: Object.values(byArea) }
+  })
+  return ok({ areas, dates, risk })
+})
+
 // 3. 逐条特征判定明细
 route('GET', '/api/scores/:id/features', (ctx) => {
   requireRole(ctx, [...PAGE_ROLES.risk, ...PAGE_ROLES.clues])

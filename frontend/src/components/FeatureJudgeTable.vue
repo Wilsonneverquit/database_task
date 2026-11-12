@@ -51,7 +51,7 @@ const props = defineProps({
 const hits = computed(() => props.features.filter((f) => f.is_hit === 1 && f.is_missing !== 1))
 const sum = computed(() => hits.value.reduce((s, f) => s + f.weight, 0))
 
-// 《前端交接文档》B2：总分 = 1.1693 + 2.9285 + 1.9274 = 6.0252 ≈ 6.03
+// 《前端交接文档》B2：总分 = 1.2098 + 2.9667 + 1.9725 = 6.1490 ≈ 6.15
 const formula = computed(() => {
   if (!hits.value.length) return `0（无命中特征） = ${fixed(props.totalScore)}`
   const parts = hits.value.map((f, i) => {

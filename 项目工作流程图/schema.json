@@ -1,0 +1,2956 @@
+{
+  "db": "risk_alert",
+  "tables": [
+    {
+      "name": "sys_role",
+      "comment": "角色表",
+      "pk": [
+        "role_id"
+      ],
+      "cols": [
+        {
+          "name": "role_id",
+          "type": "VARCHAR(16)",
+          "comment": "角色编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "role_name",
+          "type": "VARCHAR(40)",
+          "comment": "角色名称",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "role_desc",
+          "type": "VARCHAR(200)",
+          "comment": "职责说明",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "TINYINT",
+          "comment": "1启用 0停用",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [],
+      "checks": [
+        {
+          "name": "ck_role_status",
+          "expr": "(status IN (0,1))"
+        }
+      ],
+      "uniques": [
+        "uk_role_name"
+      ],
+      "indexes": []
+    },
+    {
+      "name": "sys_user",
+      "comment": "用户表",
+      "pk": [
+        "user_id"
+      ],
+      "cols": [
+        {
+          "name": "user_id",
+          "type": "VARCHAR(20)",
+          "comment": "用户编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "username",
+          "type": "VARCHAR(40)",
+          "comment": "登录名（区分大小写）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "password_hash",
+          "type": "VARCHAR(128)",
+          "comment": "SHA2(salt+口令,256)",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "salt",
+          "type": "CHAR(16)",
+          "comment": "盐值",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "real_name",
+          "type": "VARCHAR(40)",
+          "comment": "姓名",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "TINYINT",
+          "comment": "1正常 2停用 3锁定",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "comment": "创建时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [],
+      "checks": [
+        {
+          "name": "ck_user_status",
+          "expr": "(status IN (1,2,3))"
+        }
+      ],
+      "uniques": [
+        "uk_username"
+      ],
+      "indexes": []
+    },
+    {
+      "name": "sys_user_role",
+      "comment": "用户角色表",
+      "pk": [
+        "user_id",
+        "role_id"
+      ],
+      "cols": [
+        {
+          "name": "user_id",
+          "type": "VARCHAR(20)",
+          "comment": "用户",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "sys_user.user_id",
+          "pk": true
+        },
+        {
+          "name": "role_id",
+          "type": "VARCHAR(16)",
+          "comment": "角色",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "sys_role.role_id",
+          "pk": true
+        },
+        {
+          "name": "granted_at",
+          "type": "DATETIME",
+          "comment": "授权时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_ur_user",
+          "col": "user_id",
+          "table": "sys_user",
+          "to": "user_id"
+        },
+        {
+          "name": "fk_ur_role",
+          "col": "role_id",
+          "table": "sys_role",
+          "to": "role_id"
+        }
+      ],
+      "checks": [],
+      "uniques": [],
+      "indexes": []
+    },
+    {
+      "name": "audit_log",
+      "comment": "审计日志表：谁 + 什么时候 + 改了什么",
+      "pk": [
+        "log_id"
+      ],
+      "cols": [
+        {
+          "name": "log_id",
+          "type": "BIGINT",
+          "comment": "日志号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "user_id",
+          "type": "VARCHAR(20)",
+          "comment": "操作人（会话变量解析不到时为空）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "sys_user.user_id",
+          "pk": false
+        },
+        {
+          "name": "operator_tag",
+          "type": "VARCHAR(40)",
+          "comment": "会话操作人标识 @app_user_id，取不到记 system",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "op_type",
+          "type": "TINYINT",
+          "comment": "1登录 2查询 3新增 4修改 5删除 6导出 7研判 8授权",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "table_name",
+          "type": "VARCHAR(64)",
+          "comment": "被操作表",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "record_pk",
+          "type": "VARCHAR(64)",
+          "comment": "被操作记录主键",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "op_desc",
+          "type": "VARCHAR(255)",
+          "comment": "描述",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "op_time",
+          "type": "DATETIME",
+          "comment": "时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_audit_user",
+          "col": "user_id",
+          "table": "sys_user",
+          "to": "user_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_audit_optype",
+          "expr": "(op_type BETWEEN 1 AND 8)"
+        }
+      ],
+      "uniques": [],
+      "indexes": [
+        "idx_audit_time",
+        "idx_audit_user"
+      ]
+    },
+    {
+      "name": "param_config",
+      "comment": "参数配置表（含 history_cutoff 时间边界）",
+      "pk": [
+        "param_id"
+      ],
+      "cols": [
+        {
+          "name": "param_id",
+          "type": "INT",
+          "comment": "流水号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "param_key",
+          "type": "VARCHAR(60)",
+          "comment": "参数名",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "param_value",
+          "type": "VARCHAR(200)",
+          "comment": "参数值",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "param_type",
+          "type": "TINYINT",
+          "comment": "1整型 2小数 3字符串 4布尔",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "param_desc",
+          "type": "VARCHAR(255)",
+          "comment": "含义",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "updated_at",
+          "type": "DATETIME",
+          "comment": "更新时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [],
+      "checks": [
+        {
+          "name": "ck_param_type",
+          "expr": "(param_type BETWEEN 1 AND 4)"
+        }
+      ],
+      "uniques": [
+        "uk_param_key"
+      ],
+      "indexes": []
+    },
+    {
+      "name": "area_info",
+      "comment": "区域表",
+      "pk": [
+        "area_id"
+      ],
+      "cols": [
+        {
+          "name": "area_id",
+          "type": "VARCHAR(12)",
+          "comment": "区域编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "area_name",
+          "type": "VARCHAR(60)",
+          "comment": "区域名称（虚构）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "area_type",
+          "type": "TINYINT",
+          "comment": "1城市道路 2商圈 3乡镇 4高速出入口",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "parent_area_id",
+          "type": "VARCHAR(12)",
+          "comment": "上级区域",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "is_active",
+          "type": "TINYINT",
+          "comment": "1启用 0停用",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "comment": "创建时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_area_parent",
+          "col": "parent_area_id",
+          "table": "area_info",
+          "to": "area_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_area_type",
+          "expr": "(area_type BETWEEN 1 AND 4)"
+        }
+      ],
+      "uniques": [],
+      "indexes": []
+    },
+    {
+      "name": "place_info",
+      "comment": "场所表",
+      "pk": [
+        "place_id"
+      ],
+      "cols": [
+        {
+          "name": "place_id",
+          "type": "VARCHAR(16)",
+          "comment": "场所编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "place_name",
+          "type": "VARCHAR(80)",
+          "comment": "场所名称（虚构）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "place_type",
+          "type": "TINYINT",
+          "comment": "1饭店 2KTV 3酒吧 4其他",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "area_id",
+          "type": "VARCHAR(12)",
+          "comment": "所属区域",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "address",
+          "type": "VARCHAR(200)",
+          "comment": "地址（虚构）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "is_active",
+          "type": "TINYINT",
+          "comment": "1启用 0停用",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_place_area",
+          "col": "area_id",
+          "table": "area_info",
+          "to": "area_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_place_type",
+          "expr": "(place_type BETWEEN 1 AND 4)"
+        }
+      ],
+      "uniques": [],
+      "indexes": [
+        "idx_place_area"
+      ]
+    },
+    {
+      "name": "person_info",
+      "comment": "人员表",
+      "pk": [
+        "person_id"
+      ],
+      "cols": [
+        {
+          "name": "person_id",
+          "type": "VARCHAR(16)",
+          "comment": "人员编号（三库统一编码）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "person_name",
+          "type": "VARCHAR(40)",
+          "comment": "姓名（虚构）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "gender",
+          "type": "TINYINT",
+          "comment": "0未知 1男 2女",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "birth_year",
+          "type": "SMALLINT",
+          "comment": "出生年份",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "phone_hash",
+          "type": "CHAR(64)",
+          "comment": "手机号散列",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "home_area_id",
+          "type": "VARCHAR(12)",
+          "comment": "居住区域（算\"离家较远\"的基准点）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "person_type",
+          "type": "TINYINT",
+          "comment": "1案件涉事人 2对照人 3研判对象",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "comment": "创建时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_person_area",
+          "col": "home_area_id",
+          "table": "area_info",
+          "to": "area_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_person_gender",
+          "expr": "(gender IN (0,1,2))"
+        },
+        {
+          "name": "ck_person_type",
+          "expr": "(person_type IN (1,2,3))"
+        },
+        {
+          "name": "ck_person_birth",
+          "expr": "(birth_year IS NULL OR birth_year BETWEEN 1900 AND 2020)"
+        }
+      ],
+      "uniques": [
+        "uk_person_phone"
+      ],
+      "indexes": [
+        "idx_person_home"
+      ]
+    },
+    {
+      "name": "vehicle_owner",
+      "comment": "车辆车主表",
+      "pk": [
+        "vehicle_id"
+      ],
+      "cols": [
+        {
+          "name": "vehicle_id",
+          "type": "VARCHAR(16)",
+          "comment": "车辆编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "plate_hash",
+          "type": "CHAR(64)",
+          "comment": "车牌散列",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "plate_mask",
+          "type": "VARCHAR(16)",
+          "comment": "车牌展示值",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "owner_person_id",
+          "type": "VARCHAR(16)",
+          "comment": "车主",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "person_info.person_id",
+          "pk": false
+        },
+        {
+          "name": "vehicle_type",
+          "type": "TINYINT",
+          "comment": "1小型 2大型 3摩托 4其他",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "is_active",
+          "type": "TINYINT",
+          "comment": "1有效 0注销",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_vehicle_owner",
+          "col": "owner_person_id",
+          "table": "person_info",
+          "to": "person_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_vehicle_type",
+          "expr": "(vehicle_type BETWEEN 1 AND 4)"
+        }
+      ],
+      "uniques": [
+        "uk_plate"
+      ],
+      "indexes": [
+        "idx_vehicle_owner"
+      ]
+    },
+    {
+      "name": "case_info",
+      "comment": "案件表：只存历史段（occur_time < history_cutoff）",
+      "pk": [
+        "case_id"
+      ],
+      "cols": [
+        {
+          "name": "case_id",
+          "type": "VARCHAR(20)",
+          "comment": "案件编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "occur_time",
+          "type": "DATETIME",
+          "comment": "案发时间（必须早于 history_cutoff）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "occur_hour",
+          "type": "TINYINT",
+          "comment": "案发小时：生成列，物理上不可能与 occur_time 不一致",
+          "notnull": false,
+          "auto": false,
+          "gen": true,
+          "pk": false
+        },
+        {
+          "name": "area_id",
+          "type": "VARCHAR(12)",
+          "comment": "案发区域",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "place_id",
+          "type": "VARCHAR(16)",
+          "comment": "案发前消费场所（可空）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "place_info.place_id",
+          "pk": false
+        },
+        {
+          "name": "person_id",
+          "type": "VARCHAR(16)",
+          "comment": "涉事人员",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "person_info.person_id",
+          "pk": false
+        },
+        {
+          "name": "vehicle_id",
+          "type": "VARCHAR(16)",
+          "comment": "涉事车辆（可空）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "vehicle_owner.vehicle_id",
+          "pk": false
+        },
+        {
+          "name": "driver_confirmed",
+          "type": "TINYINT",
+          "comment": "1已人工确认驾驶人=车主；0仅有车辆归属",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "case_type",
+          "type": "TINYINT",
+          "comment": "1饮酒驾驶 2醉酒驾驶 3酒驾肇事",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "alcohol_value",
+          "type": "DECIMAL(5,1)",
+          "comment": "血液酒精含量 mg/100mL",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "distance_home",
+          "type": "DECIMAL(6,2)",
+          "comment": "距住所公里（仅展示/统计，不被特征读取）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "dispose_status",
+          "type": "TINYINT",
+          "comment": "0待处置 1已处罚 2已移送",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "comment": "入库时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_case_area",
+          "col": "area_id",
+          "table": "area_info",
+          "to": "area_id"
+        },
+        {
+          "name": "fk_case_place",
+          "col": "place_id",
+          "table": "place_info",
+          "to": "place_id"
+        },
+        {
+          "name": "fk_case_person",
+          "col": "person_id",
+          "table": "person_info",
+          "to": "person_id"
+        },
+        {
+          "name": "fk_case_vehicle",
+          "col": "vehicle_id",
+          "table": "vehicle_owner",
+          "to": "vehicle_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_case_alcohol",
+          "expr": "(alcohol_value > 0 AND alcohol_value <= 500)"
+        },
+        {
+          "name": "ck_case_distance",
+          "expr": "(distance_home IS NULL OR (distance_home >= 0 AND distance_home <= 200))"
+        },
+        {
+          "name": "ck_case_type",
+          "expr": "(case_type BETWEEN 1 AND 3)"
+        },
+        {
+          "name": "ck_case_dispose",
+          "expr": "(dispose_status BETWEEN 0 AND 3)"
+        },
+        {
+          "name": "ck_case_driver",
+          "expr": "(driver_confirmed IN (0,1))"
+        }
+      ],
+      "uniques": [],
+      "indexes": [
+        "idx_case_time_area",
+        "idx_case_person",
+        "idx_case_hour"
+      ]
+    },
+    {
+      "name": "control_person",
+      "comment": "对照人群表：算 p0 的分组，只取历史段",
+      "pk": [
+        "control_id"
+      ],
+      "cols": [
+        {
+          "name": "control_id",
+          "type": "BIGINT",
+          "comment": "流水号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "person_id",
+          "type": "VARCHAR(16)",
+          "comment": "对照人员",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "person_info.person_id",
+          "pk": false
+        },
+        {
+          "name": "area_id",
+          "type": "VARCHAR(12)",
+          "comment": "对照区域",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "sample_date",
+          "type": "DATE",
+          "comment": "对照日期",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "hour_slot",
+          "type": "TINYINT",
+          "comment": "对照时段 0-23",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "match_type",
+          "type": "TINYINT",
+          "comment": "1同期同区域 2同期同类 3随机",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_control_person",
+          "col": "person_id",
+          "table": "person_info",
+          "to": "person_id"
+        },
+        {
+          "name": "fk_control_area",
+          "col": "area_id",
+          "table": "area_info",
+          "to": "area_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_control_hour",
+          "expr": "(hour_slot BETWEEN 0 AND 23)"
+        },
+        {
+          "name": "ck_control_match",
+          "expr": "(match_type IN (1,2,3))"
+        }
+      ],
+      "uniques": [
+        "uk_control"
+      ],
+      "indexes": [
+        "idx_control_area"
+      ]
+    },
+    {
+      "name": "consume_record",
+      "comment": "消费流水表（历史段+观察段都有）",
+      "pk": [
+        "consume_id"
+      ],
+      "cols": [
+        {
+          "name": "consume_id",
+          "type": "BIGINT",
+          "comment": "流水号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "record_no",
+          "type": "VARCHAR(32)",
+          "comment": "业务流水号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "person_id",
+          "type": "VARCHAR(16)",
+          "comment": "消费者",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "person_info.person_id",
+          "pk": false
+        },
+        {
+          "name": "place_id",
+          "type": "VARCHAR(16)",
+          "comment": "场所",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "place_info.place_id",
+          "pk": false
+        },
+        {
+          "name": "consume_time",
+          "type": "DATETIME",
+          "comment": "消费时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "amount",
+          "type": "DECIMAL(10,2)",
+          "comment": "金额（元）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "has_alcohol",
+          "type": "TINYINT",
+          "comment": "1含酒水",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_consume_person",
+          "col": "person_id",
+          "table": "person_info",
+          "to": "person_id"
+        },
+        {
+          "name": "fk_consume_place",
+          "col": "place_id",
+          "table": "place_info",
+          "to": "place_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_consume_amount",
+          "expr": "(amount >= 0 AND amount <= 100000)"
+        },
+        {
+          "name": "ck_consume_alcohol",
+          "expr": "(has_alcohol IN (0,1))"
+        }
+      ],
+      "uniques": [
+        "uk_consume_no"
+      ],
+      "indexes": [
+        "idx_consume_person",
+        "idx_consume_place"
+      ]
+    },
+    {
+      "name": "taxi_order",
+      "comment": "出行订单表（网约车+代驾）",
+      "pk": [
+        "order_id"
+      ],
+      "cols": [
+        {
+          "name": "order_id",
+          "type": "BIGINT",
+          "comment": "流水号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "order_no",
+          "type": "VARCHAR(32)",
+          "comment": "订单号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "person_id",
+          "type": "VARCHAR(16)",
+          "comment": "下单人",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "person_info.person_id",
+          "pk": false
+        },
+        {
+          "name": "order_type",
+          "type": "TINYINT",
+          "comment": "1网约车 2代驾",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "order_time",
+          "type": "DATETIME",
+          "comment": "下单时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "start_area_id",
+          "type": "VARCHAR(12)",
+          "comment": "出发区域",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "end_area_id",
+          "type": "VARCHAR(12)",
+          "comment": "到达区域",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "order_status",
+          "type": "TINYINT",
+          "comment": "1已完成 2取消 3进行中",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_taxi_person",
+          "col": "person_id",
+          "table": "person_info",
+          "to": "person_id"
+        },
+        {
+          "name": "fk_taxi_sarea",
+          "col": "start_area_id",
+          "table": "area_info",
+          "to": "area_id"
+        },
+        {
+          "name": "fk_taxi_earea",
+          "col": "end_area_id",
+          "table": "area_info",
+          "to": "area_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_taxi_type",
+          "expr": "(order_type IN (1,2))"
+        },
+        {
+          "name": "ck_taxi_status",
+          "expr": "(order_status BETWEEN 1 AND 3)"
+        }
+      ],
+      "uniques": [
+        "uk_order_no"
+      ],
+      "indexes": [
+        "idx_taxi_person",
+        "idx_taxi_type"
+      ]
+    },
+    {
+      "name": "vehicle_track",
+      "comment": "卡口过车表",
+      "pk": [
+        "track_id"
+      ],
+      "cols": [
+        {
+          "name": "track_id",
+          "type": "BIGINT",
+          "comment": "流水号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "record_no",
+          "type": "VARCHAR(32)",
+          "comment": "抓拍流水号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "vehicle_id",
+          "type": "VARCHAR(16)",
+          "comment": "车辆",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "vehicle_owner.vehicle_id",
+          "pk": false
+        },
+        {
+          "name": "gate_id",
+          "type": "VARCHAR(16)",
+          "comment": "卡口编号，结构为 区域编号-卡口序号（如 A02-G01）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "area_id",
+          "type": "VARCHAR(12)",
+          "comment": "卡口所属区域（冗余，由 gate_id 前缀决定，CHECK 锁死）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "pass_time",
+          "type": "DATETIME",
+          "comment": "过车时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "direction",
+          "type": "TINYINT",
+          "comment": "1驶入区域 2驶出区域",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_track_vehicle",
+          "col": "vehicle_id",
+          "table": "vehicle_owner",
+          "to": "vehicle_id"
+        },
+        {
+          "name": "fk_track_area",
+          "col": "area_id",
+          "table": "area_info",
+          "to": "area_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_track_direction",
+          "expr": "(direction IN (1,2))"
+        }
+      ],
+      "uniques": [
+        "uk_track_no"
+      ],
+      "indexes": [
+        "idx_track_vehicle",
+        "idx_track_area",
+        "idx_track_gate"
+      ]
+    },
+    {
+      "name": "feature_def",
+      "comment": "特征定义表：双口径（src_table 训练 / match_src 研判）",
+      "pk": [
+        "feature_id"
+      ],
+      "cols": [
+        {
+          "name": "feature_id",
+          "type": "VARCHAR(16)",
+          "comment": "特征编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "feature_code",
+          "type": "VARCHAR(40)",
+          "comment": "英文编码",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "feature_name",
+          "type": "VARCHAR(80)",
+          "comment": "特征名称",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "risk_type",
+          "type": "TINYINT",
+          "comment": "风险类型：1酒驾（预留扩展）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "feature_cat",
+          "type": "TINYINT",
+          "comment": "1时空 2消费 3出行 4行为 5反例",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "direction",
+          "type": "TINYINT",
+          "comment": "1正向 2反向",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "object_scope",
+          "type": "TINYINT",
+          "comment": "1区域时段 2个人 3两者",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "value_type",
+          "type": "TINYINT",
+          "comment": "1布尔 2数值阈值 3枚举 4频次",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "src_table",
+          "type": "VARCHAR(64)",
+          "comment": "训练口径：统计 p1/p0 的取数表（用 case_info）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "match_src",
+          "type": "VARCHAR(64)",
+          "comment": "研判口径：匹配取数表；NULL=同 src_table；白名单见 CHECK",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "match_expr",
+          "type": "VARCHAR(500)",
+          "comment": "匹配口径说明（什么算命中）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "time_window_min",
+          "type": "INT",
+          "comment": "取数窗口（分钟）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "min_sample",
+          "type": "INT",
+          "comment": "样本下限",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "TINYINT",
+          "comment": "1启用 0停用",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "description",
+          "type": "VARCHAR(255)",
+          "comment": "口径说明",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [],
+      "checks": [
+        {
+          "name": "ck_feature_cat",
+          "expr": "(feature_cat BETWEEN 1 AND 5)"
+        },
+        {
+          "name": "ck_feature_dir",
+          "expr": "(direction IN (1,2))"
+        },
+        {
+          "name": "ck_feature_scope",
+          "expr": "(object_scope IN (1,2,3))"
+        },
+        {
+          "name": "ck_feature_valtype",
+          "expr": "(value_type BETWEEN 1 AND 4)"
+        },
+        {
+          "name": "ck_feature_status",
+          "expr": "(status IN (0,1))"
+        }
+      ],
+      "uniques": [
+        "uk_feature_code"
+      ],
+      "indexes": [
+        "idx_feature_cat"
+      ]
+    },
+    {
+      "name": "feature_version",
+      "comment": "特征库版本表：同一风险类型只能有一个已发布版本",
+      "pk": [
+        "version_id"
+      ],
+      "cols": [
+        {
+          "name": "version_id",
+          "type": "VARCHAR(20)",
+          "comment": "版本编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "risk_type",
+          "type": "TINYINT",
+          "comment": "风险类型：1酒驾",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "version_no",
+          "type": "VARCHAR(20)",
+          "comment": "版本号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "publish_status",
+          "type": "TINYINT",
+          "comment": "0草稿 1已发布 2已归档",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "current_flag",
+          "type": "TINYINT",
+          "comment": "已发布标记：配合唯一键保证同风险类型只有一个在用版本",
+          "notnull": false,
+          "auto": false,
+          "gen": true,
+          "pk": false
+        },
+        {
+          "name": "based_case_cnt",
+          "type": "INT",
+          "comment": "统计用案件数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "based_ctrl_cnt",
+          "type": "INT",
+          "comment": "统计用对照数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "calc_at",
+          "type": "DATETIME",
+          "comment": "权重计算时间",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "published_by",
+          "type": "VARCHAR(20)",
+          "comment": "发布人",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "sys_user.user_id",
+          "pk": false
+        },
+        {
+          "name": "remark",
+          "type": "VARCHAR(255)",
+          "comment": "版本说明",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "comment": "创建时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_version_pub",
+          "col": "published_by",
+          "table": "sys_user",
+          "to": "user_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_version_status",
+          "expr": "(publish_status IN (0,1,2))"
+        }
+      ],
+      "uniques": [
+        "uk_version_no",
+        "uk_version_current"
+      ],
+      "indexes": []
+    },
+    {
+      "name": "feature_weight",
+      "comment": "特征权重表：p1/p0/lift 为生成列，weight 由存储过程计算",
+      "pk": [
+        "weight_id"
+      ],
+      "cols": [
+        {
+          "name": "weight_id",
+          "type": "BIGINT",
+          "comment": "流水号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "version_id",
+          "type": "VARCHAR(20)",
+          "comment": "版本",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "feature_version.version_id",
+          "pk": false
+        },
+        {
+          "name": "feature_id",
+          "type": "VARCHAR(16)",
+          "comment": "特征",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "feature_def.feature_id",
+          "pk": false
+        },
+        {
+          "name": "case_hit",
+          "type": "INT",
+          "comment": "案例组命中数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "case_total",
+          "type": "INT",
+          "comment": "案例组总数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "ctrl_hit",
+          "type": "INT",
+          "comment": "对照组命中数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "ctrl_total",
+          "type": "INT",
+          "comment": "对照组总数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "p1",
+          "type": "DECIMAL(6,4)",
+          "comment": "案例组出现率：生成列，改命中数自动重算",
+          "notnull": false,
+          "auto": false,
+          "gen": true,
+          "pk": false
+        },
+        {
+          "name": "p0",
+          "type": "DECIMAL(6,4)",
+          "comment": "对照组出现率：生成列",
+          "notnull": false,
+          "auto": false,
+          "gen": true,
+          "pk": false
+        },
+        {
+          "name": "lift",
+          "type": "DECIMAL(8,4)",
+          "comment": "提升度 = p1/p0：生成列",
+          "notnull": false,
+          "auto": false,
+          "gen": true,
+          "pk": false
+        },
+        {
+          "name": "weight",
+          "type": "DECIMAL(6,4)",
+          "comment": "对数几率权重（-3~3，含 +0.5 平滑），由 sp_calc_feature_weight 写入",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "is_valid",
+          "type": "TINYINT",
+          "comment": "1参与研判 0样本不足",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "calc_at",
+          "type": "DATETIME",
+          "comment": "计算时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_weight_version",
+          "col": "version_id",
+          "table": "feature_version",
+          "to": "version_id"
+        },
+        {
+          "name": "fk_weight_feature",
+          "col": "feature_id",
+          "table": "feature_def",
+          "to": "feature_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_weight_hit1",
+          "expr": "(case_hit <= case_total)"
+        },
+        {
+          "name": "ck_weight_hit0",
+          "expr": "(ctrl_hit <= ctrl_total)"
+        },
+        {
+          "name": "ck_weight",
+          "expr": "(weight BETWEEN -3 AND 3)"
+        },
+        {
+          "name": "ck_weight_valid",
+          "expr": "(is_valid IN (0,1))"
+        }
+      ],
+      "uniques": [
+        "uk_weight"
+      ],
+      "indexes": [
+        "idx_weight_feature"
+      ]
+    },
+    {
+      "name": "judge_rule",
+      "comment": "研判规则表",
+      "pk": [
+        "rule_id"
+      ],
+      "cols": [
+        {
+          "name": "rule_id",
+          "type": "VARCHAR(16)",
+          "comment": "规则编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "rule_name",
+          "type": "VARCHAR(80)",
+          "comment": "规则名称",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "risk_type",
+          "type": "TINYINT",
+          "comment": "风险类型：1酒驾",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "version_id",
+          "type": "VARCHAR(20)",
+          "comment": "权重版本",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "feature_version.version_id",
+          "pk": false
+        },
+        {
+          "name": "judge_object",
+          "type": "TINYINT",
+          "comment": "1区域时段 2个人",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "min_sample",
+          "type": "INT",
+          "comment": "样本量下限",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "min_hit_cnt",
+          "type": "INT",
+          "comment": "最少命中特征数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "low_threshold",
+          "type": "DECIMAL(6,2)",
+          "comment": "低/中分界",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "high_threshold",
+          "type": "DECIMAL(6,2)",
+          "comment": "中/高分界",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "counter_block",
+          "type": "TINYINT",
+          "comment": "1反例命中不生成线索",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "status",
+          "type": "TINYINT",
+          "comment": "1启用 0停用",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "remark",
+          "type": "VARCHAR(255)",
+          "comment": "说明",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "comment": "创建时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_rule_version",
+          "col": "version_id",
+          "table": "feature_version",
+          "to": "version_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_rule_object",
+          "expr": "(judge_object IN (1,2))"
+        },
+        {
+          "name": "ck_rule_hit",
+          "expr": "(min_hit_cnt >= 1)"
+        },
+        {
+          "name": "ck_rule_sample",
+          "expr": "(min_sample >= 0)"
+        },
+        {
+          "name": "ck_rule_thr",
+          "expr": "(high_threshold > low_threshold)"
+        },
+        {
+          "name": "ck_rule_status",
+          "expr": "(status IN (0,1))"
+        }
+      ],
+      "uniques": [],
+      "indexes": [
+        "idx_rule_object"
+      ]
+    },
+    {
+      "name": "rule_feature",
+      "comment": "规则特征关联表",
+      "pk": [
+        "rule_id",
+        "feature_id"
+      ],
+      "cols": [
+        {
+          "name": "rule_id",
+          "type": "VARCHAR(16)",
+          "comment": "规则",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "judge_rule.rule_id",
+          "pk": true
+        },
+        {
+          "name": "feature_id",
+          "type": "VARCHAR(16)",
+          "comment": "特征",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "feature_def.feature_id",
+          "pk": true
+        },
+        {
+          "name": "is_required",
+          "type": "TINYINT",
+          "comment": "1强特征",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "sort_no",
+          "type": "INT",
+          "comment": "展示顺序",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_rf_rule",
+          "col": "rule_id",
+          "table": "judge_rule",
+          "to": "rule_id"
+        },
+        {
+          "name": "fk_rf_feature",
+          "col": "feature_id",
+          "table": "feature_def",
+          "to": "feature_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_rf_required",
+          "expr": "(is_required IN (0,1))"
+        }
+      ],
+      "uniques": [],
+      "indexes": [
+        "idx_rf_feature"
+      ]
+    },
+    {
+      "name": "judge_batch",
+      "comment": "研判批次表",
+      "pk": [
+        "batch_id"
+      ],
+      "cols": [
+        {
+          "name": "batch_id",
+          "type": "VARCHAR(24)",
+          "comment": "批次编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "rule_id",
+          "type": "VARCHAR(16)",
+          "comment": "规则",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "judge_rule.rule_id",
+          "pk": false
+        },
+        {
+          "name": "version_id",
+          "type": "VARCHAR(20)",
+          "comment": "权重版本",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "feature_version.version_id",
+          "pk": false
+        },
+        {
+          "name": "judge_object",
+          "type": "TINYINT",
+          "comment": "1区域时段 2个人",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "data_start",
+          "type": "DATETIME",
+          "comment": "数据窗起（必须在观察段）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "data_end",
+          "type": "DATETIME",
+          "comment": "数据窗止",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "area_id",
+          "type": "VARCHAR(12)",
+          "comment": "限定区域（空=全部）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "run_status",
+          "type": "TINYINT",
+          "comment": "0待执行 1执行中 2成功 3失败",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "run_no",
+          "type": "INT",
+          "comment": "执行次数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "object_cnt",
+          "type": "INT",
+          "comment": "本批对象数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "clue_cnt",
+          "type": "INT",
+          "comment": "本批线索数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "duration_ms",
+          "type": "INT",
+          "comment": "耗时（毫秒）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "operator_id",
+          "type": "VARCHAR(20)",
+          "comment": "操作人",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "sys_user.user_id",
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "comment": "创建时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_batch_rule",
+          "col": "rule_id",
+          "table": "judge_rule",
+          "to": "rule_id"
+        },
+        {
+          "name": "fk_batch_version",
+          "col": "version_id",
+          "table": "feature_version",
+          "to": "version_id"
+        },
+        {
+          "name": "fk_batch_area",
+          "col": "area_id",
+          "table": "area_info",
+          "to": "area_id"
+        },
+        {
+          "name": "fk_batch_operator",
+          "col": "operator_id",
+          "table": "sys_user",
+          "to": "user_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_batch_window",
+          "expr": "(data_end > data_start)"
+        },
+        {
+          "name": "ck_batch_status",
+          "expr": "(run_status BETWEEN 0 AND 3)"
+        },
+        {
+          "name": "ck_batch_object",
+          "expr": "(judge_object IN (1,2))"
+        },
+        {
+          "name": "ck_batch_count",
+          "expr": "(object_cnt >= 0 AND clue_cnt >= 0)"
+        }
+      ],
+      "uniques": [],
+      "indexes": [
+        "idx_batch_status",
+        "idx_batch_area"
+      ]
+    },
+    {
+      "name": "risk_score",
+      "comment": "评分表：object_id 为生成列；命中明细在 risk_score_feature",
+      "pk": [
+        "score_id"
+      ],
+      "cols": [
+        {
+          "name": "score_id",
+          "type": "BIGINT",
+          "comment": "流水号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "batch_id",
+          "type": "VARCHAR(24)",
+          "comment": "批次",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "judge_batch.batch_id",
+          "pk": false
+        },
+        {
+          "name": "rule_id",
+          "type": "VARCHAR(16)",
+          "comment": "规则快照",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "judge_rule.rule_id",
+          "pk": false
+        },
+        {
+          "name": "version_id",
+          "type": "VARCHAR(20)",
+          "comment": "权重版本快照",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "feature_version.version_id",
+          "pk": false
+        },
+        {
+          "name": "object_type",
+          "type": "TINYINT",
+          "comment": "1区域时段 2个人",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "area_id",
+          "type": "VARCHAR(12)",
+          "comment": "区域（个人对象可空）",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "area_info.area_id",
+          "pk": false
+        },
+        {
+          "name": "day_type",
+          "type": "TINYINT",
+          "comment": "1工作日 2周末",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "hour_slot",
+          "type": "TINYINT",
+          "comment": "时段 0-23",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "person_id",
+          "type": "VARCHAR(16)",
+          "comment": "个人对象的人员编号",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "person_info.person_id",
+          "pk": false
+        },
+        {
+          "name": "object_id",
+          "type": "VARCHAR(64)",
+          "comment": "对象标识：生成列，不可能与 area/day/hour/person 不一致",
+          "notnull": false,
+          "auto": false,
+          "gen": true,
+          "pk": false
+        },
+        {
+          "name": "sample_size",
+          "type": "INT",
+          "comment": "归集记录数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "total_score",
+          "type": "DECIMAL(8,2)",
+          "comment": "总分 = 命中特征权重之和",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "risk_level",
+          "type": "TINYINT",
+          "comment": "1低 2中 3高",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "is_clue",
+          "type": "TINYINT",
+          "comment": "1已生成线索",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "comment": "生成时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_score_batch",
+          "col": "batch_id",
+          "table": "judge_batch",
+          "to": "batch_id"
+        },
+        {
+          "name": "fk_score_area",
+          "col": "area_id",
+          "table": "area_info",
+          "to": "area_id"
+        },
+        {
+          "name": "fk_score_person",
+          "col": "person_id",
+          "table": "person_info",
+          "to": "person_id"
+        },
+        {
+          "name": "fk_score_rule",
+          "col": "rule_id",
+          "table": "judge_rule",
+          "to": "rule_id"
+        },
+        {
+          "name": "fk_score_version",
+          "col": "version_id",
+          "table": "feature_version",
+          "to": "version_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_score_object",
+          "expr": "(object_type IN (1,2))"
+        },
+        {
+          "name": "ck_score_level",
+          "expr": "(risk_level IN (1,2,3))"
+        },
+        {
+          "name": "ck_score_clue",
+          "expr": "(is_clue IN (0,1))"
+        },
+        {
+          "name": "ck_score_daytype",
+          "expr": "(day_type IS NULL OR day_type IN (1,2))"
+        },
+        {
+          "name": "ck_score_hour",
+          "expr": "(hour_slot IS NULL OR hour_slot BETWEEN 0 AND 23)"
+        },
+        {
+          "name": "ck_score_person_field",
+          "expr": "(object_type = 1 OR person_id IS NOT NULL)"
+        }
+      ],
+      "uniques": [
+        "uk_batch_object"
+      ],
+      "indexes": [
+        "idx_score_level",
+        "idx_score_area",
+        "idx_score_person"
+      ]
+    },
+    {
+      "name": "risk_score_feature",
+      "comment": "评分命中明细表：解决 hit_features 存字符串的 1NF 问题",
+      "pk": [
+        "score_id",
+        "feature_id"
+      ],
+      "cols": [
+        {
+          "name": "score_id",
+          "type": "BIGINT",
+          "comment": "评分",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "risk_score.score_id",
+          "pk": true
+        },
+        {
+          "name": "feature_id",
+          "type": "VARCHAR(16)",
+          "comment": "特征",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "feature_def.feature_id",
+          "pk": true
+        },
+        {
+          "name": "is_hit",
+          "type": "TINYINT",
+          "comment": "1命中 0未命中",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "weight",
+          "type": "DECIMAL(6,4)",
+          "comment": "评分时该特征的权重快照（权重日后变化不影响历史）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "hit_value",
+          "type": "DECIMAL(10,2)",
+          "comment": "命中值：布尔型=1/0，数值型=实际计数",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "is_missing",
+          "type": "TINYINT",
+          "comment": "1数据缺失（既非命中也不是干净的未命中）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_ssf_score",
+          "col": "score_id",
+          "table": "risk_score",
+          "to": "score_id"
+        },
+        {
+          "name": "fk_ssf_feature",
+          "col": "feature_id",
+          "table": "feature_def",
+          "to": "feature_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_ssf_hit",
+          "expr": "(is_hit IN (0,1))"
+        },
+        {
+          "name": "ck_ssf_missing",
+          "expr": "(is_missing IN (0,1))"
+        },
+        {
+          "name": "ck_ssf_weight",
+          "expr": "(weight BETWEEN -3 AND 3)"
+        }
+      ],
+      "uniques": [],
+      "indexes": [
+        "idx_ssf_feature"
+      ]
+    },
+    {
+      "name": "risk_clue",
+      "comment": "风险线索表：只存状态机，事实通过 score_id 追溯到评分与明细",
+      "pk": [
+        "clue_id"
+      ],
+      "cols": [
+        {
+          "name": "clue_id",
+          "type": "VARCHAR(24)",
+          "comment": "线索编号",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "batch_id",
+          "type": "VARCHAR(24)",
+          "comment": "来源批次",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "judge_batch.batch_id",
+          "pk": false
+        },
+        {
+          "name": "score_id",
+          "type": "BIGINT",
+          "comment": "来源评分（1:1，线索的全部事实都在评分与明细里）",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "risk_score.score_id",
+          "pk": false
+        },
+        {
+          "name": "version_id",
+          "type": "VARCHAR(20)",
+          "comment": "权重版本",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "feature_version.version_id",
+          "pk": false
+        },
+        {
+          "name": "clue_status",
+          "type": "TINYINT",
+          "comment": "0待核查 1核查中 2已确认 3已排除",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "assignee_id",
+          "type": "VARCHAR(20)",
+          "comment": "承办人",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "fk": "sys_user.user_id",
+          "pk": false
+        },
+        {
+          "name": "create_at",
+          "type": "DATETIME",
+          "comment": "生成时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "close_at",
+          "type": "DATETIME",
+          "comment": "关闭时间",
+          "notnull": false,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_clue_batch",
+          "col": "batch_id",
+          "table": "judge_batch",
+          "to": "batch_id"
+        },
+        {
+          "name": "fk_clue_score",
+          "col": "score_id",
+          "table": "risk_score",
+          "to": "score_id"
+        },
+        {
+          "name": "fk_clue_version",
+          "col": "version_id",
+          "table": "feature_version",
+          "to": "version_id"
+        },
+        {
+          "name": "fk_clue_assignee",
+          "col": "assignee_id",
+          "table": "sys_user",
+          "to": "user_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_clue_status",
+          "expr": "(clue_status BETWEEN 0 AND 3)"
+        }
+      ],
+      "uniques": [
+        "uk_clue_score"
+      ],
+      "indexes": [
+        "idx_clue_status",
+        "idx_clue_assignee",
+        "idx_clue_batch"
+      ]
+    },
+    {
+      "name": "clue_feedback",
+      "comment": "核查反馈表：插入后由触发器自动改线索状态",
+      "pk": [
+        "feedback_id"
+      ],
+      "cols": [
+        {
+          "name": "feedback_id",
+          "type": "BIGINT",
+          "comment": "流水号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "clue_id",
+          "type": "VARCHAR(24)",
+          "comment": "线索",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "risk_clue.clue_id",
+          "pk": false
+        },
+        {
+          "name": "weight_applied",
+          "type": "TINYINT",
+          "comment": "1已纳入下轮权重",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_fb_clue",
+          "col": "clue_id",
+          "table": "risk_clue",
+          "to": "clue_id"
+        },
+        {
+          "name": "fk_fb_checker",
+          "col": "checker_id",
+          "table": "sys_user",
+          "to": "user_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "",
+          "expr": "_result   TINYINT      NOT NULL COMMENT '1属实 2不属实 3无法核实'"
+        },
+        {
+          "name": "",
+          "expr": "_method   TINYINT      NOT NULL DEFAULT 1 COMMENT '1电话 2现场 3数据复核'"
+        },
+        {
+          "name": "",
+          "expr": "_remark   VARCHAR(500)          COMMENT '结论说明'"
+        },
+        {
+          "name": "",
+          "expr": "er_id     VARCHAR(20)  NOT NULL COMMENT '核查人'"
+        },
+        {
+          "name": "",
+          "expr": "_time     DATETIME     NOT NULL COMMENT '核查时间'"
+        },
+        {
+          "name": "ck_fb_result",
+          "expr": "(check_result IN (1,2,3))"
+        },
+        {
+          "name": "ck_fb_method",
+          "expr": "(check_method IN (1,2,3))"
+        },
+        {
+          "name": "ck_fb_applied",
+          "expr": "(weight_applied IN (0,1))"
+        }
+      ],
+      "uniques": [],
+      "indexes": [
+        "idx_fb_clue",
+        "idx_fb_time"
+      ]
+    },
+    {
+      "name": "clue_feedback_feature",
+      "comment": "反馈特征明细表：闭环回写时定位到具体特征",
+      "pk": [
+        "feedback_id",
+        "feature_id"
+      ],
+      "cols": [
+        {
+          "name": "feedback_id",
+          "type": "BIGINT",
+          "comment": "反馈",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "clue_feedback.feedback_id",
+          "pk": true
+        },
+        {
+          "name": "feature_id",
+          "type": "VARCHAR(16)",
+          "comment": "被否定的特征",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "fk": "feature_def.feature_id",
+          "pk": true
+        },
+        {
+          "name": "is_wrong",
+          "type": "TINYINT",
+          "comment": "1该特征被证伪",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [
+        {
+          "name": "fk_cff_fb",
+          "col": "feedback_id",
+          "table": "clue_feedback",
+          "to": "feedback_id"
+        },
+        {
+          "name": "fk_cff_feature",
+          "col": "feature_id",
+          "table": "feature_def",
+          "to": "feature_id"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_cff_wrong",
+          "expr": "(is_wrong IN (0,1))"
+        }
+      ],
+      "uniques": [],
+      "indexes": [
+        "idx_cff_feature"
+      ]
+    },
+    {
+      "name": "eval_label",
+      "comment": "评估标签表：观察段埋案，仅评估用，研判员无权限",
+      "pk": [
+        "label_id"
+      ],
+      "cols": [
+        {
+          "name": "label_id",
+          "type": "BIGINT",
+          "comment": "流水号",
+          "notnull": true,
+          "auto": true,
+          "gen": false,
+          "pk": true
+        },
+        {
+          "name": "object_type",
+          "type": "TINYINT",
+          "comment": "1区域时段 2个人",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "object_id",
+          "type": "VARCHAR(64)",
+          "comment": "与 risk_score.object_id 同格式",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "sample_type",
+          "type": "TINYINT",
+          "comment": "1正样本 2干扰样本 3对照样本",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "label",
+          "type": "TINYINT",
+          "comment": "1该对象确有酒驾 0无",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "case_cnt",
+          "type": "INT",
+          "comment": "该对象内真实案件数",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        },
+        {
+          "name": "created_at",
+          "type": "DATETIME",
+          "comment": "埋案时间",
+          "notnull": true,
+          "auto": false,
+          "gen": false,
+          "pk": false
+        }
+      ],
+      "fks": [],
+      "checks": [
+        {
+          "name": "ck_eval_type",
+          "expr": "(sample_type IN (1,2,3))"
+        },
+        {
+          "name": "ck_eval_label",
+          "expr": "(label IN (0,1))"
+        },
+        {
+          "name": "ck_eval_object",
+          "expr": "(object_type IN (1,2))"
+        }
+      ],
+      "uniques": [
+        "uk_eval"
+      ],
+      "indexes": [
+        "idx_eval_type"
+      ]
+    }
+  ],
+  "views": [
+    {
+      "name": "v_case_history",
+      "body": "SELECT c.case_id, c.occur_time, c.area_id, c.place_id, c.person_id, c.vehicle_id,\n       c.case_type, c.alcohol_value, c.distance_home, c.driver_confirmed, c.dispose_status\nFROM case_info c\nJOIN param_config p ON p.param_key = 'history_cutoff'\nWHERE c.occur_time < CAST(p.param_value AS DATETIME)"
+    },
+    {
+      "name": "v_region_risk",
+      "body": "SELECT s.batch_id,\n       s.area_id,\n       a.area_name,\n       CASE s.day_type WHEN 1 THEN '工作日' ELSE '周末' END AS day_type_name,\n       s.hour_slot,\n       s.sample_size,\n       (SELECT COUNT(*) FROM risk_score_feature x\n         WHERE x.score_id = s.score_id AND x.is_hit = 1) AS hit_cnt,\n       s.total_score,\n       CASE s.risk_level WHEN 1 THEN '低' WHEN 2 THEN '中' ELSE '高' END AS risk_level_name,\n       (SELECT GROUP_CONCAT(CONCAT(x.feature_id, ':', IF(x.weight > 0, '+', ''), x.weight)\n                            ORDER BY x.feature_id SEPARATOR '"
+    },
+    {
+      "name": "v_clue_list",
+      "body": "SELECT c.clue_id,\n       s.area_id,\n       a.area_name,\n       s.hour_slot,\n       CASE s.risk_level WHEN 1 THEN '低' WHEN 2 THEN '中' ELSE '高' END AS risk_level_name,\n       s.total_score,\n       (SELECT GROUP_CONCAT(CONCAT(x.feature_id, ':', IF(x.weight > 0, '+', ''), x.weight)\n                            ORDER BY x.feature_id SEPARATOR '"
+    }
+  ],
+  "triggers": [
+    {
+      "name": "trg_clue_audit",
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "on": "risk_clue"
+    },
+    {
+      "name": "trg_weight_audit",
+      "timing": "AFTER",
+      "event": "UPDATE",
+      "on": "feature_weight"
+    },
+    {
+      "name": "trg_feedback_close_clue",
+      "timing": "AFTER",
+      "event": "INSERT",
+      "on": "clue_feedback"
+    }
+  ],
+  "procedures": [
+    "sp_calc_feature_weight",
+    "sp_upsert_score"
+  ],
+  "stats": {
+    "tables": 26,
+    "fks": 45,
+    "checks": 64,
+    "views": 3,
+    "triggers": 3,
+    "procedures": 2
+  }
+}

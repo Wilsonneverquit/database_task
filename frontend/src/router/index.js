@@ -7,6 +7,7 @@ const routes = [
   { path: '/', name: 'overview', component: () => import('@/views/OverviewView.vue'), meta: { page: 'overview', title: '首页概览', code: 'A1' } },
   { path: '/risk', name: 'risk', component: () => import('@/views/RiskListView.vue'), meta: { page: 'risk', title: '区域时段风险', code: 'B1' } },
   { path: '/risk/:scoreId', name: 'risk-detail', component: () => import('@/views/RiskDetailView.vue'), meta: { page: 'risk', title: '风险详情', code: 'B2', parent: 'risk' } },
+  { path: '/risk-map', name: 'risk-map', component: () => import('@/views/RiskMapView.vue'), meta: { page: 'risk', title: '风险地图', code: 'B3' } },
   { path: '/clues', name: 'clues', component: () => import('@/views/ClueListView.vue'), meta: { page: 'clues', title: '线索列表', code: 'C1' } },
   { path: '/clues/:clueId', name: 'clue-detail', component: () => import('@/views/ClueListView.vue'), meta: { page: 'clues', title: '线索详情', code: 'C2', parent: 'clues' } },
   { path: '/features', name: 'features', component: () => import('@/views/FeatureListView.vue'), meta: { page: 'features', title: '特征清单', code: 'D1' } },

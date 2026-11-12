@@ -7,12 +7,12 @@ export const hourLabel = (h) => (h === null || h === undefined ? '—' : `${pad2
 
 export const fixed = (n, d = 2) => (n === null || n === undefined || Number.isNaN(n) ? '—' : Number(n).toFixed(d))
 
-// 权重带符号：+1.1693 / -1.5918
+// 权重带符号：+1.2098 / -1.5312
 export const signed = (n, d = 4) => (n === null || n === undefined ? '—' : `${n > 0 ? '+' : ''}${Number(n).toFixed(d)}`)
 
 export const percent = (n, d = 1) => (n === null || n === undefined ? '—' : `${(n * 100).toFixed(d)}%`)
 
-// "F001:+1.1693;F002:+2.9285" → [{ id, weight }]
+// "F001:+1.2098;F002:+2.9667" → [{ id, weight }]
 export function parseHitFeatures(s) {
   if (!s) return []
   return s.split(';').map((p) => {

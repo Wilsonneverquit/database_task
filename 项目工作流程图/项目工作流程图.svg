@@ -1,0 +1,324 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="594mm" height="420mm" viewBox="0 0 594 420">
+<rect x="0" y="0" width="594" height="420" fill="#ffffff"/>
+<rect x="2.00" y="2.00" width="590.00" height="416.00" rx="3" fill="none" stroke="#dbe3ec" stroke-width="0.5"/>
+<text x="8.00" y="19.00" font-family="Microsoft YaHei" font-size="9.173" fill="#0b1523" font-weight="bold" text-anchor="start">基于多种风险特征分析的酒驾预警系统</text>
+<rect x="6.00" y="40.00" width="162.00" height="146.00" rx="2.8" fill="#f6f8fb" stroke="#86aaca" stroke-width="0.6"/>
+<rect x="6.00" y="40.00" width="2.60" height="146.00" rx="0.9" fill="#2E6DA4" stroke="none" stroke-width="0.3"/>
+<rect x="10.60" y="43.00" width="48.63" height="12.40" rx="2.0" fill="#2E6DA4" stroke="none" stroke-width="0.3"/>
+<text x="34.91" y="52.40" font-family="Microsoft YaHei" font-size="9.173" fill="#ffffff" font-weight="bold" text-anchor="middle">① 案例库</text>
+<text x="62.63" y="52.20" font-family="Microsoft YaHei" font-size="4.234" fill="#2E6DA4" font-weight="bold" text-anchor="start">· 5 张</text>
+<text x="163.60" y="51.00" font-family="Microsoft YaHei" font-size="2.822" fill="#4d83b2" font-weight="normal" text-anchor="end">数据管理员</text>
+<text x="11.60" y="61.80" font-family="Microsoft YaHei" font-size="2.893" fill="#6b7280" font-weight="normal" text-anchor="start">已经发生过的事实 · 只存 cutoff 之前</text>
+<rect x="10.40" y="63.60" width="153.20" height="0.32" rx="0" fill="#a1bdd6" stroke="none" stroke-width="0.3"/>
+<rect x="10.50" y="68.00" width="74.00" height="35.20" rx="2.0" fill="#ffffff" stroke="#8eb0ce" stroke-width="0.45"/>
+<rect x="10.50" y="68.00" width="2.00" height="35.20" rx="0.9" fill="#2E6DA4" stroke="none" stroke-width="0.3"/>
+<text x="15.70" y="80.28" font-family="Microsoft YaHei" font-size="6.703" fill="#2E6DA4" font-weight="bold" text-anchor="start">区域表</text>
+<text x="79.30" y="79.58" font-family="Consolas" font-size="2.268" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<text x="15.70" y="89.26" font-family="Consolas" font-size="5.363" fill="#0f172a" font-weight="bold" text-anchor="start">area_info</text>
+<text x="15.70" y="99.17" font-family="Microsoft YaHei" font-size="3.151" fill="#6b7280" font-weight="normal" text-anchor="start">研判的空间单元，全库 8 处引用</text>
+<rect x="90.00" y="68.00" width="74.00" height="35.20" rx="2.0" fill="#ffffff" stroke="#8eb0ce" stroke-width="0.45"/>
+<rect x="90.00" y="68.00" width="2.00" height="35.20" rx="0.9" fill="#2E6DA4" stroke="none" stroke-width="0.3"/>
+<text x="95.20" y="80.28" font-family="Microsoft YaHei" font-size="6.703" fill="#2E6DA4" font-weight="bold" text-anchor="start">场所表</text>
+<text x="158.80" y="79.58" font-family="Consolas" font-size="2.268" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<text x="95.20" y="89.26" font-family="Consolas" font-size="5.363" fill="#0f172a" font-weight="bold" text-anchor="start">place_info</text>
+<text x="95.20" y="99.17" font-family="Microsoft YaHei" font-size="3.151" fill="#6b7280" font-weight="normal" text-anchor="start">消费发生在哪，决定 F002 判定</text>
+<rect x="10.50" y="107.70" width="74.00" height="35.20" rx="2.0" fill="#ffffff" stroke="#8eb0ce" stroke-width="0.45"/>
+<rect x="10.50" y="107.70" width="2.00" height="35.20" rx="0.9" fill="#2E6DA4" stroke="none" stroke-width="0.3"/>
+<text x="15.70" y="119.98" font-family="Microsoft YaHei" font-size="6.703" fill="#2E6DA4" font-weight="bold" text-anchor="start">人员表</text>
+<text x="79.30" y="119.28" font-family="Consolas" font-size="2.268" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<text x="15.70" y="128.96" font-family="Consolas" font-size="5.363" fill="#0f172a" font-weight="bold" text-anchor="start">person_info</text>
+<text x="15.70" y="138.87" font-family="Microsoft YaHei" font-size="3.151" fill="#6b7280" font-weight="normal" text-anchor="start">三库共用的人员主数据</text>
+<rect x="90.00" y="107.70" width="74.00" height="35.20" rx="2.0" fill="#ffffff" stroke="#8eb0ce" stroke-width="0.45"/>
+<rect x="90.00" y="107.70" width="2.00" height="35.20" rx="0.9" fill="#2E6DA4" stroke="none" stroke-width="0.3"/>
+<text x="95.20" y="119.98" font-family="Microsoft YaHei" font-size="6.703" fill="#2E6DA4" font-weight="bold" text-anchor="start">案件表</text>
+<text x="158.80" y="119.28" font-family="Consolas" font-size="2.268" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<text x="95.20" y="128.96" font-family="Consolas" font-size="5.363" fill="#0f172a" font-weight="bold" text-anchor="start">case_info</text>
+<text x="95.20" y="138.87" font-family="Microsoft YaHei" font-size="3.151" fill="#6b7280" font-weight="normal" text-anchor="start">历史案件，特征提炼的唯一来源</text>
+<rect x="10.50" y="147.40" width="153.50" height="35.20" rx="2.0" fill="#ffffff" stroke="#8eb0ce" stroke-width="0.45"/>
+<rect x="10.50" y="147.40" width="2.00" height="35.20" rx="0.9" fill="#2E6DA4" stroke="none" stroke-width="0.3"/>
+<text x="15.70" y="159.68" font-family="Microsoft YaHei" font-size="6.703" fill="#2E6DA4" font-weight="bold" text-anchor="start">对照人群</text>
+<text x="158.80" y="158.98" font-family="Consolas" font-size="2.268" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<text x="15.70" y="168.66" font-family="Consolas" font-size="5.363" fill="#0f172a" font-weight="bold" text-anchor="start">control_person</text>
+<text x="15.70" y="178.57" font-family="Microsoft YaHei" font-size="3.151" fill="#6b7280" font-weight="normal" text-anchor="start">同期同区域没酒驾的人，用来算 P0</text>
+<rect x="6.00" y="190.00" width="162.00" height="128.00" rx="2.8" fill="#f5fafa" stroke="#7dbbbb" stroke-width="0.6"/>
+<rect x="6.00" y="190.00" width="2.60" height="128.00" rx="0.9" fill="#1F8A8A" stroke="none" stroke-width="0.3"/>
+<rect x="10.60" y="193.00" width="48.63" height="12.40" rx="2.0" fill="#1F8A8A" stroke="none" stroke-width="0.3"/>
+<text x="34.91" y="202.40" font-family="Microsoft YaHei" font-size="9.173" fill="#ffffff" font-weight="bold" text-anchor="middle">① 信息库</text>
+<text x="62.63" y="202.20" font-family="Microsoft YaHei" font-size="4.234" fill="#1F8A8A" font-weight="bold" text-anchor="start">· 4 张</text>
+<text x="163.60" y="201.00" font-family="Microsoft YaHei" font-size="2.822" fill="#419c9c" font-weight="normal" text-anchor="end">数据管理员</text>
+<text x="11.60" y="211.80" font-family="Microsoft YaHei" font-size="2.893" fill="#6b7280" font-weight="normal" text-anchor="start">每天的流水 · 唯一横跨历史段与观察段</text>
+<rect x="10.40" y="213.60" width="153.20" height="0.32" rx="0" fill="#9acaca" stroke="none" stroke-width="0.3"/>
+<rect x="10.50" y="218.00" width="74.00" height="46.05" rx="2.0" fill="#ffffff" stroke="#86c0c0" stroke-width="0.45"/>
+<rect x="10.50" y="218.00" width="2.00" height="46.05" rx="0.9" fill="#1F8A8A" stroke="none" stroke-width="0.3"/>
+<text x="15.70" y="235.70" font-family="Microsoft YaHei" font-size="6.703" fill="#1F8A8A" font-weight="bold" text-anchor="start">车辆车主</text>
+<text x="79.30" y="235.00" font-family="Consolas" font-size="2.268" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<text x="15.70" y="244.68" font-family="Consolas" font-size="5.363" fill="#0f172a" font-weight="bold" text-anchor="start">vehicle_owner</text>
+<text x="15.70" y="254.60" font-family="Microsoft YaHei" font-size="3.151" fill="#6b7280" font-weight="normal" text-anchor="start">“车→人”的那座桥</text>
+<rect x="90.00" y="218.00" width="74.00" height="46.05" rx="2.0" fill="#ffffff" stroke="#86c0c0" stroke-width="0.45"/>
+<rect x="90.00" y="218.00" width="2.00" height="46.05" rx="0.9" fill="#1F8A8A" stroke="none" stroke-width="0.3"/>
+<text x="95.20" y="235.70" font-family="Microsoft YaHei" font-size="6.703" fill="#1F8A8A" font-weight="bold" text-anchor="start">消费流水</text>
+<text x="158.80" y="235.00" font-family="Consolas" font-size="2.268" fill="#9ca3af" font-weight="normal" text-anchor="end">23 行</text>
+<text x="95.20" y="244.68" font-family="Consolas" font-size="5.363" fill="#0f172a" font-weight="bold" text-anchor="start">consume_record</text>
+<text x="95.20" y="254.60" font-family="Microsoft YaHei" font-size="3.151" fill="#6b7280" font-weight="normal" text-anchor="start">餐饮娱乐消费，“场所饮酒”的输入</text>
+<rect x="10.50" y="268.55" width="74.00" height="46.05" rx="2.0" fill="#ffffff" stroke="#86c0c0" stroke-width="0.45"/>
+<rect x="10.50" y="268.55" width="2.00" height="46.05" rx="0.9" fill="#1F8A8A" stroke="none" stroke-width="0.3"/>
+<text x="15.70" y="286.25" font-family="Microsoft YaHei" font-size="6.703" fill="#1F8A8A" font-weight="bold" text-anchor="start">出行订单</text>
+<text x="79.30" y="285.55" font-family="Consolas" font-size="2.268" fill="#9ca3af" font-weight="normal" text-anchor="end">12 行</text>
+<text x="15.70" y="295.23" font-family="Consolas" font-size="5.363" fill="#0f172a" font-weight="bold" text-anchor="start">taxi_order</text>
+<text x="15.70" y="305.15" font-family="Microsoft YaHei" font-size="3.151" fill="#6b7280" font-weight="normal" text-anchor="start">网约车/代驾，“有无代驾”的输入</text>
+<rect x="90.00" y="268.55" width="74.00" height="46.05" rx="2.0" fill="#ffffff" stroke="#86c0c0" stroke-width="0.45"/>
+<rect x="90.00" y="268.55" width="2.00" height="46.05" rx="0.9" fill="#1F8A8A" stroke="none" stroke-width="0.3"/>
+<text x="95.20" y="286.25" font-family="Microsoft YaHei" font-size="6.703" fill="#1F8A8A" font-weight="bold" text-anchor="start">卡口过车</text>
+<text x="158.80" y="285.55" font-family="Consolas" font-size="2.268" fill="#9ca3af" font-weight="normal" text-anchor="end">26 行</text>
+<text x="95.20" y="295.23" font-family="Consolas" font-size="5.363" fill="#0f172a" font-weight="bold" text-anchor="start">vehicle_track</text>
+<text x="95.20" y="305.15" font-family="Microsoft YaHei" font-size="3.151" fill="#6b7280" font-weight="normal" text-anchor="start">车辆过卡口，“自驾离开”的输入</text>
+<rect x="200.00" y="40.00" width="146.00" height="200.00" rx="2.8" fill="#f9f8fb" stroke="#b2a2cc" stroke-width="0.6"/>
+<rect x="200.00" y="40.00" width="2.60" height="200.00" rx="0.9" fill="#7B5EA7" stroke="none" stroke-width="0.3"/>
+<rect x="204.60" y="43.00" width="48.63" height="12.40" rx="2.0" fill="#7B5EA7" stroke="none" stroke-width="0.3"/>
+<text x="228.91" y="52.40" font-family="Microsoft YaHei" font-size="9.173" fill="#ffffff" font-weight="bold" text-anchor="middle">② 特征库</text>
+<text x="256.63" y="52.20" font-family="Microsoft YaHei" font-size="4.234" fill="#7B5EA7" font-weight="bold" text-anchor="start">· 5 张</text>
+<text x="341.60" y="51.00" font-family="Microsoft YaHei" font-size="2.822" fill="#8f76b4" font-weight="normal" text-anchor="end">特征管理员</text>
+<text x="205.60" y="61.80" font-family="Microsoft YaHei" font-size="2.893" fill="#6b7280" font-weight="normal" text-anchor="start">从案例里总结出的经验 · 可配置的规则</text>
+<rect x="204.40" y="63.60" width="137.20" height="0.32" rx="0" fill="#c4b7d7" stroke="none" stroke-width="0.3"/>
+<rect x="204.50" y="100.00" width="66.00" height="42.53" rx="2.0" fill="#ffffff" stroke="#b8a8cf" stroke-width="0.45"/>
+<rect x="204.50" y="100.00" width="2.00" height="42.53" rx="0.9" fill="#7B5EA7" stroke="none" stroke-width="0.3"/>
+<text x="209.70" y="116.12" font-family="Microsoft YaHei" font-size="6.350" fill="#7B5EA7" font-weight="bold" text-anchor="start">特征定义</text>
+<text x="265.30" y="115.46" font-family="Consolas" font-size="2.149" fill="#9ca3af" font-weight="normal" text-anchor="end">8 行</text>
+<text x="209.70" y="124.73" font-family="Consolas" font-size="5.080" fill="#0f172a" font-weight="bold" text-anchor="start">feature_def</text>
+<text x="209.70" y="134.23" font-family="Microsoft YaHei" font-size="2.985" fill="#6b7280" font-weight="normal" text-anchor="start">特征清单 · 取数口径 · 命中条件</text>
+<rect x="276.00" y="100.00" width="66.00" height="42.53" rx="2.0" fill="#ffffff" stroke="#b8a8cf" stroke-width="0.45"/>
+<rect x="276.00" y="100.00" width="2.00" height="42.53" rx="0.9" fill="#7B5EA7" stroke="none" stroke-width="0.3"/>
+<text x="281.20" y="116.12" font-family="Microsoft YaHei" font-size="6.350" fill="#7B5EA7" font-weight="bold" text-anchor="start">特征库版本</text>
+<text x="336.80" y="115.46" font-family="Consolas" font-size="2.149" fill="#9ca3af" font-weight="normal" text-anchor="end">3 行</text>
+<text x="281.20" y="124.73" font-family="Consolas" font-size="5.080" fill="#0f172a" font-weight="bold" text-anchor="start">feature_version</text>
+<text x="281.20" y="134.23" font-family="Microsoft YaHei" font-size="2.985" fill="#6b7280" font-weight="normal" text-anchor="start">权重不覆盖，只升版，旧版可回滚</text>
+<rect x="204.50" y="147.03" width="66.00" height="42.53" rx="2.0" fill="#ffffff" stroke="#b8a8cf" stroke-width="0.45"/>
+<rect x="204.50" y="147.03" width="2.00" height="42.53" rx="0.9" fill="#7B5EA7" stroke="none" stroke-width="0.3"/>
+<text x="209.70" y="163.16" font-family="Microsoft YaHei" font-size="6.350" fill="#7B5EA7" font-weight="bold" text-anchor="start">特征权重</text>
+<text x="265.30" y="162.50" font-family="Consolas" font-size="2.149" fill="#9ca3af" font-weight="normal" text-anchor="end">8 行</text>
+<text x="209.70" y="171.76" font-family="Consolas" font-size="5.080" fill="#0f172a" font-weight="bold" text-anchor="start">feature_weight</text>
+<text x="209.70" y="181.26" font-family="Microsoft YaHei" font-size="2.985" fill="#6b7280" font-weight="normal" text-anchor="start">P1/P0/提升度/权重，全部可复算</text>
+<rect x="259.78" y="182.37" width="5.52" height="4.80" rx="0.8" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.26"/>
+<text x="262.54" y="185.57" font-family="Consolas" font-size="1.976" fill="#3730a3" font-weight="bold" text-anchor="middle">PRC</text>
+<rect x="276.00" y="147.03" width="66.00" height="42.53" rx="2.0" fill="#ffffff" stroke="#b8a8cf" stroke-width="0.45"/>
+<rect x="276.00" y="147.03" width="2.00" height="42.53" rx="0.9" fill="#7B5EA7" stroke="none" stroke-width="0.3"/>
+<text x="281.20" y="163.16" font-family="Microsoft YaHei" font-size="6.350" fill="#7B5EA7" font-weight="bold" text-anchor="start">研判规则</text>
+<text x="336.80" y="162.50" font-family="Consolas" font-size="2.149" fill="#9ca3af" font-weight="normal" text-anchor="end">3 行</text>
+<text x="281.20" y="171.76" font-family="Consolas" font-size="5.080" fill="#0f172a" font-weight="bold" text-anchor="start">judge_rule</text>
+<text x="281.20" y="181.26" font-family="Microsoft YaHei" font-size="2.985" fill="#6b7280" font-weight="normal" text-anchor="start">阈值、最小样本、最少命中几条</text>
+<rect x="204.50" y="194.07" width="137.50" height="42.53" rx="2.0" fill="#ffffff" stroke="#b8a8cf" stroke-width="0.45"/>
+<rect x="204.50" y="194.07" width="2.00" height="42.53" rx="0.9" fill="#7B5EA7" stroke="none" stroke-width="0.3"/>
+<text x="209.70" y="210.19" font-family="Microsoft YaHei" font-size="6.350" fill="#7B5EA7" font-weight="bold" text-anchor="start">规则-特征关联</text>
+<text x="336.80" y="209.53" font-family="Consolas" font-size="2.149" fill="#9ca3af" font-weight="normal" text-anchor="end">12 行</text>
+<text x="209.70" y="218.79" font-family="Consolas" font-size="5.080" fill="#0f172a" font-weight="bold" text-anchor="start">rule_feature</text>
+<text x="209.70" y="228.29" font-family="Microsoft YaHei" font-size="2.985" fill="#6b7280" font-weight="normal" text-anchor="start">一条规则由哪几条特征组成</text>
+<rect x="378.00" y="40.00" width="210.00" height="278.00" rx="2.8" fill="#fdf9f4" stroke="#e9b06f" stroke-width="0.6"/>
+<rect x="378.00" y="40.00" width="2.60" height="278.00" rx="0.9" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<rect x="382.60" y="43.00" width="66.97" height="12.40" rx="2.0" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<text x="416.09" y="52.40" font-family="Microsoft YaHei" font-size="9.173" fill="#ffffff" font-weight="bold" text-anchor="middle">④ 研判线索库</text>
+<text x="452.97" y="52.20" font-family="Microsoft YaHei" font-size="4.234" fill="#D97706" font-weight="bold" text-anchor="start">· 7 张</text>
+<text x="583.60" y="51.00" font-family="Microsoft YaHei" font-size="2.822" fill="#df8b2b" font-weight="normal" text-anchor="end">研判员 / 核查员</text>
+<text x="383.60" y="61.80" font-family="Microsoft YaHei" font-size="2.893" fill="#6b7280" font-weight="normal" text-anchor="start">研判的结果与闭环 · 外加评估的标准答案</text>
+<rect x="382.40" y="63.60" width="201.20" height="0.32" rx="0" fill="#eec28f" stroke="none" stroke-width="0.3"/>
+<rect x="382.50" y="68.00" width="98.00" height="57.15" rx="2.0" fill="#ffffff" stroke="#eab679" stroke-width="0.45"/>
+<rect x="382.50" y="68.00" width="2.00" height="57.15" rx="0.9" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<text x="387.70" y="91.07" font-family="Microsoft YaHei" font-size="7.056" fill="#D97706" font-weight="bold" text-anchor="start">研判批次</text>
+<text x="475.30" y="90.34" font-family="Consolas" font-size="2.388" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<text x="387.70" y="100.43" font-family="Consolas" font-size="5.645" fill="#0f172a" font-weight="bold" text-anchor="start">judge_batch</text>
+<text x="387.70" y="110.76" font-family="Microsoft YaHei" font-size="3.316" fill="#6b7280" font-weight="normal" text-anchor="start">一次研判 = 一个批次，可重跑</text>
+<rect x="469.78" y="117.95" width="5.52" height="4.80" rx="0.8" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.26"/>
+<text x="472.54" y="121.15" font-family="Consolas" font-size="1.976" fill="#3730a3" font-weight="bold" text-anchor="middle">PRC</text>
+<rect x="486.00" y="68.00" width="98.00" height="57.15" rx="2.0" fill="#ffffff" stroke="#eab679" stroke-width="0.45"/>
+<rect x="486.00" y="68.00" width="2.00" height="57.15" rx="0.9" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<text x="491.20" y="91.07" font-family="Microsoft YaHei" font-size="7.056" fill="#D97706" font-weight="bold" text-anchor="start">评分表</text>
+<text x="578.80" y="90.34" font-family="Consolas" font-size="2.388" fill="#9ca3af" font-weight="normal" text-anchor="end">6 行</text>
+<text x="491.20" y="100.43" font-family="Consolas" font-size="5.645" fill="#0f172a" font-weight="bold" text-anchor="start">risk_score</text>
+<text x="491.20" y="110.76" font-family="Microsoft YaHei" font-size="3.316" fill="#6b7280" font-weight="normal" text-anchor="start">每个对象的得分与等级</text>
+<rect x="382.50" y="131.15" width="98.00" height="57.15" rx="2.0" fill="#ffffff" stroke="#eab679" stroke-width="0.45"/>
+<rect x="382.50" y="131.15" width="2.00" height="57.15" rx="0.9" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<text x="387.70" y="154.22" font-family="Microsoft YaHei" font-size="7.056" fill="#D97706" font-weight="bold" text-anchor="start">评分命中明细</text>
+<text x="475.30" y="153.49" font-family="Consolas" font-size="2.388" fill="#9ca3af" font-weight="normal" text-anchor="end">24 行</text>
+<text x="387.70" y="163.58" font-family="Consolas" font-size="5.645" fill="#0f172a" font-weight="bold" text-anchor="start">risk_score_feature</text>
+<text x="387.70" y="173.91" font-family="Microsoft YaHei" font-size="3.316" fill="#6b7280" font-weight="normal" text-anchor="start">每个对象 × 每条特征一行，修复 1NF</text>
+<rect x="486.00" y="131.15" width="98.00" height="57.15" rx="2.0" fill="#ffffff" stroke="#eab679" stroke-width="0.45"/>
+<rect x="486.00" y="131.15" width="2.00" height="57.15" rx="0.9" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<text x="491.20" y="154.22" font-family="Microsoft YaHei" font-size="7.056" fill="#D97706" font-weight="bold" text-anchor="start">风险线索</text>
+<text x="578.80" y="153.49" font-family="Consolas" font-size="2.388" fill="#9ca3af" font-weight="normal" text-anchor="end">4 行</text>
+<text x="491.20" y="163.58" font-family="Consolas" font-size="5.645" fill="#0f172a" font-weight="bold" text-anchor="start">risk_clue</text>
+<text x="491.20" y="173.91" font-family="Microsoft YaHei" font-size="3.316" fill="#6b7280" font-weight="normal" text-anchor="start">过阈值后的状态机，事实靠 score_id 追溯</text>
+<rect x="573.28" y="181.10" width="5.52" height="4.80" rx="0.8" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.26"/>
+<text x="576.04" y="184.30" font-family="Consolas" font-size="1.976" fill="#3730a3" font-weight="bold" text-anchor="middle">TRG</text>
+<rect x="382.50" y="194.30" width="98.00" height="57.15" rx="2.0" fill="#ffffff" stroke="#eab679" stroke-width="0.45"/>
+<rect x="382.50" y="194.30" width="2.00" height="57.15" rx="0.9" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<text x="387.70" y="217.37" font-family="Microsoft YaHei" font-size="7.056" fill="#D97706" font-weight="bold" text-anchor="start">⑤ 核查反馈</text>
+<text x="475.30" y="216.64" font-family="Consolas" font-size="2.388" fill="#9ca3af" font-weight="normal" text-anchor="end">3 行</text>
+<text x="387.70" y="226.73" font-family="Consolas" font-size="5.645" fill="#0f172a" font-weight="bold" text-anchor="start">clue_feedback</text>
+<text x="387.70" y="237.06" font-family="Microsoft YaHei" font-size="3.316" fill="#6b7280" font-weight="normal" text-anchor="start">人工核查结论，插入即推进线索状态</text>
+<rect x="469.78" y="244.25" width="5.52" height="4.80" rx="0.8" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.26"/>
+<text x="472.54" y="247.45" font-family="Consolas" font-size="1.976" fill="#3730a3" font-weight="bold" text-anchor="middle">TRG</text>
+<rect x="486.00" y="194.30" width="98.00" height="57.15" rx="2.0" fill="#ffffff" stroke="#eab679" stroke-width="0.45"/>
+<rect x="486.00" y="194.30" width="2.00" height="57.15" rx="0.9" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<text x="491.20" y="217.37" font-family="Microsoft YaHei" font-size="7.056" fill="#D97706" font-weight="bold" text-anchor="start">反馈特征明细</text>
+<text x="578.80" y="216.64" font-family="Consolas" font-size="2.388" fill="#9ca3af" font-weight="normal" text-anchor="end">2 行</text>
+<text x="491.20" y="226.73" font-family="Consolas" font-size="5.645" fill="#0f172a" font-weight="bold" text-anchor="start">clue_feedback_feature</text>
+<text x="491.20" y="237.06" font-family="Microsoft YaHei" font-size="3.316" fill="#6b7280" font-weight="normal" text-anchor="start">记下哪条特征被核查否定</text>
+<rect x="382.50" y="257.45" width="202.00" height="57.15" rx="2.0" fill="#ffffff" stroke="#eab679" stroke-width="0.45"/>
+<rect x="382.50" y="257.45" width="2.00" height="57.15" rx="0.9" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<text x="387.70" y="280.52" font-family="Microsoft YaHei" font-size="7.056" fill="#D97706" font-weight="bold" text-anchor="start">评估标签</text>
+<text x="579.30" y="279.79" font-family="Consolas" font-size="2.388" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<text x="387.70" y="289.88" font-family="Consolas" font-size="5.645" fill="#0f172a" font-weight="bold" text-anchor="start">eval_label</text>
+<text x="387.70" y="300.21" font-family="Microsoft YaHei" font-size="3.316" fill="#6b7280" font-weight="normal" text-anchor="start">观察段的“标准答案”，评估时才读</text>
+<text x="491.00" y="264.85" font-family="Microsoft YaHei" font-size="2.328" fill="#9a3412" font-weight="bold" text-anchor="start">评估结果（示例库）</text>
+<text x="510.50" y="272.25" font-family="Microsoft YaHei" font-size="2.046" fill="#6b7280" font-weight="normal" text-anchor="middle">预测=1</text>
+<text x="535.50" y="272.25" font-family="Microsoft YaHei" font-size="2.046" fill="#6b7280" font-weight="normal" text-anchor="middle">预测=0</text>
+<text x="495.20" y="280.85" font-family="Microsoft YaHei" font-size="2.046" fill="#6b7280" font-weight="normal" text-anchor="end">实际=1</text>
+<rect x="498.00" y="275.05" width="23.60" height="8.00" rx="0.8" fill="#e7f3e7" stroke="#e5e7eb" stroke-width="0.25"/>
+<text x="509.80" y="280.85" font-family="Microsoft YaHei" font-size="2.117" fill="#334155" font-weight="bold" text-anchor="middle">TP 3</text>
+<rect x="523.00" y="275.05" width="23.60" height="8.00" rx="0.8" fill="#f4f6f9" stroke="#e5e7eb" stroke-width="0.25"/>
+<text x="534.80" y="280.85" font-family="Microsoft YaHei" font-size="2.117" fill="#334155" font-weight="bold" text-anchor="middle">FN 0</text>
+<text x="495.20" y="290.25" font-family="Microsoft YaHei" font-size="2.046" fill="#6b7280" font-weight="normal" text-anchor="end">实际=0</text>
+<rect x="498.00" y="284.45" width="23.60" height="8.00" rx="0.8" fill="#fdecec" stroke="#e5e7eb" stroke-width="0.25"/>
+<text x="509.80" y="290.25" font-family="Microsoft YaHei" font-size="2.117" fill="#334155" font-weight="bold" text-anchor="middle">FP 1</text>
+<rect x="523.00" y="284.45" width="23.60" height="8.00" rx="0.8" fill="#f4f6f9" stroke="#e5e7eb" stroke-width="0.25"/>
+<text x="534.80" y="290.25" font-family="Microsoft YaHei" font-size="2.117" fill="#334155" font-weight="bold" text-anchor="middle">TN 6</text>
+<text x="491.00" y="298.25" font-family="Microsoft YaHei" font-size="2.117" fill="#9b2c2c" font-weight="normal" text-anchor="start">精确率 0.75 · 召回率 1.00 · 误报率 0.14</text>
+<text x="491.00" y="303.25" font-family="Microsoft YaHei" font-size="1.976" fill="#b06060" font-weight="normal" text-anchor="start">误报率 = 不属实 / 已核查总数</text>
+<rect x="204.50" y="70.00" width="137.00" height="22.00" rx="2.0" fill="#ffffff" stroke="#b8a8cf" stroke-width="0.45"/>
+<rect x="204.50" y="70.00" width="2.00" height="22.00" rx="0.9" fill="#7c3aed" stroke="none" stroke-width="0.3"/>
+<text x="209.00" y="77.60" font-family="Microsoft YaHei" font-size="4.410" fill="#7B5EA7" font-weight="bold" text-anchor="start">历史案件视图</text>
+<text x="209.00" y="84.20" font-family="Consolas" font-size="3.704" fill="#0f172a" font-weight="bold" text-anchor="start">v_case_history</text>
+<text x="209.00" y="89.80" font-family="Microsoft YaHei" font-size="2.470" fill="#6b7280" font-weight="normal" text-anchor="start">时点边界的唯一出口：研判只许读它</text>
+<text x="204.50" y="96.60" font-family="Microsoft YaHei" font-size="2.328" fill="#7B5EA7" font-weight="bold" text-anchor="start">③ 版本发布：草稿→发布→归档，current_flag 保证同类型仅一版在用</text>
+<text x="584.60" y="60.60" font-family="Microsoft YaHei" font-size="2.187" fill="#e29944" font-weight="normal" text-anchor="end">视图出口：v_region_risk → 页面 B1 ｜ v_clue_list → 页面 C1（研判员只有视图权限）</text>
+<path d="M 168.00 120.00 L 200.00 120.00" fill="none" stroke="#475569" stroke-width="1.0" stroke-linecap="round" stroke-linejoin="round" opacity="1.0"/><path d="M 200.00 120.00 L 195.25 121.95 L 195.25 118.05 Z" fill="#475569" stroke="none"/>
+<rect x="171.50" y="100.20" width="25.00" height="9.60" rx="4.798132000000001" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.25"/>
+<text x="184.00" y="103.94" font-family="Microsoft YaHei" font-size="2.611" fill="#334155" font-weight="normal" text-anchor="start">② 统计提炼</text>
+<text x="184.00" y="107.34" font-family="Microsoft YaHei" font-size="2.611" fill="#334155" font-weight="normal" text-anchor="start">P1 / P0</text>
+<path d="M 168.00 284.00 L 200.00 284.00" fill="none" stroke="#475569" stroke-width="1.0" stroke-linecap="round" stroke-linejoin="round" opacity="1.0"/><path d="M 200.00 284.00 L 195.25 285.95 L 195.25 282.05 Z" fill="#475569" stroke="none"/>
+<rect x="169.00" y="265.20" width="30.00" height="9.60" rx="4.798132000000001" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.25"/>
+<text x="184.00" y="268.94" font-family="Microsoft YaHei" font-size="2.611" fill="#334155" font-weight="normal" text-anchor="start">① 流水</text>
+<text x="184.00" y="272.34" font-family="Microsoft YaHei" font-size="2.611" fill="#334155" font-weight="normal" text-anchor="start">历史段+观察段</text>
+<path d="M 273.00 240.00 L 273.00 244.00" fill="none" stroke="#7c3aed" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6 1.0" opacity="1.0"/><path d="M 273.00 244.00 L 271.67 240.77 L 274.33 240.77 Z" fill="#7c3aed" stroke="none"/>
+<text x="281.00" y="242.80" font-family="Microsoft YaHei" font-size="2.470" fill="#6d28d9" font-weight="normal" text-anchor="start">③ 权重 · 阈值 · 取数口径（只读）</text>
+<circle cx="262.00" cy="241.50" r="2.90" fill="#ffffff" stroke="#7c3aed" stroke-width="0.6"/>
+<text x="262.00" y="242.21" font-family="Microsoft YaHei" font-size="1.976" fill="#7c3aed" font-weight="bold" text-anchor="middle">③</text>
+<path d="M 346.00 284.00 L 378.00 284.00" fill="none" stroke="#475569" stroke-width="1.0" stroke-linecap="round" stroke-linejoin="round" opacity="1.0"/><path d="M 378.00 284.00 L 373.25 285.95 L 373.25 282.05 Z" fill="#475569" stroke="none"/>
+<rect x="346.00" y="264.70" width="32.00" height="9.60" rx="4.798132000000001" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.25"/>
+<text x="362.00" y="268.44" font-family="Microsoft YaHei" font-size="2.611" fill="#334155" font-weight="normal" text-anchor="start">④ 写入</text>
+<text x="362.00" y="271.84" font-family="Microsoft YaHei" font-size="2.611" fill="#334155" font-weight="normal" text-anchor="start">batch·score·明细</text>
+<path d="M 168.00 76.00 L 204.50 76.00" fill="none" stroke="#7c3aed" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6 1.0" opacity="1.0"/><path d="M 204.50 76.00 L 201.27 77.33 L 201.27 74.67 Z" fill="#7c3aed" stroke="none"/>
+<text x="186.00" y="72.80" font-family="Microsoft YaHei" font-size="2.328" fill="#6d28d9" font-weight="normal" text-anchor="middle">读 case_info</text>
+<path d="M 110.00 186.00 L 110.00 190.00" fill="none" stroke="#7c3aed" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.6 1.0" opacity="1.0"/><path d="M 110.00 190.00 L 108.67 186.77 L 111.33 186.77 Z" fill="#7c3aed" stroke="none"/>
+<text x="115.00" y="188.80" font-family="Microsoft YaHei" font-size="2.258" fill="#6d28d9" font-weight="normal" text-anchor="start">case_info.vehicle_id → vehicle_owner：车辆主数据在信息库，“车→人”靠 owner_person_id</text>
+<path d="M 530.00 194.30 L 530.00 191.30 L 370.00 191.30 L 370.00 32.00 L 256.00 32.00 L 256.00 40.00" fill="none" stroke="#e05252" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="1.0"/><path d="M 256.00 40.00 L 253.35 33.54 L 258.65 33.54 Z" fill="#e05252" stroke="none"/>
+<text x="262.00" y="25.60" font-family="Microsoft YaHei" font-size="2.752" fill="#b9382f" font-weight="bold" text-anchor="start">↺ 闭环 A：核查否定的特征 → 扣减 case_hit → 重算 p1 / lift → 发布新版本权重 → 下一轮研判</text>
+<text x="262.00" y="30.20" font-family="Microsoft YaHei" font-size="2.328" fill="#c4544c" font-weight="normal" text-anchor="start">出口 clue_feedback_feature.is_wrong；入口 feature_weight：版本不覆盖、只新增，旧版留档可回滚</text>
+<path d="M 560.00 318.00 L 560.00 362.00" fill="none" stroke="#e05252" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity="1.0"/><path d="M 560.00 362.00 L 557.35 355.54 L 562.65 355.54 Z" fill="#e05252" stroke="none"/>
+<text x="514.00" y="336.00" font-family="Microsoft YaHei" font-size="2.752" fill="#b9382f" font-weight="bold" text-anchor="start">⑥ 评估回写</text>
+<text x="514.00" y="341.80" font-family="Microsoft YaHei" font-size="2.258" fill="#c4544c" font-weight="normal" text-anchor="start">观察段并入 case_info</text>
+<text x="514.00" y="347.40" font-family="Microsoft YaHei" font-size="2.258" fill="#c4544c" font-weight="normal" text-anchor="start">cutoff 右移 → 下一轮</text>
+<path d="M 120.00 322.00 L 120.00 316.40" fill="none" stroke="#6b7280" stroke-width="0.55" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.0 0.8" opacity="1.0"/><path d="M 120.00 316.40 L 121.01 318.87 L 118.99 318.87 Z" fill="#6b7280" stroke="none"/>
+<text x="122.00" y="320.40" font-family="Microsoft YaHei" font-size="1.835" fill="#6b7280" font-weight="normal" text-anchor="start">鉴权</text>
+<path d="M 272.00 322.00 L 272.00 316.40" fill="none" stroke="#6b7280" stroke-width="0.55" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.0 0.8" opacity="1.0"/><path d="M 272.00 316.40 L 273.01 318.87 L 270.99 318.87 Z" fill="#6b7280" stroke="none"/>
+<text x="274.00" y="320.40" font-family="Microsoft YaHei" font-size="1.835" fill="#6b7280" font-weight="normal" text-anchor="start">留痕</text>
+<path d="M 470.00 322.00 L 470.00 316.40" fill="none" stroke="#6b7280" stroke-width="0.55" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.0 0.8" opacity="1.0"/><path d="M 470.00 316.40 L 471.01 318.87 L 468.99 318.87 Z" fill="#6b7280" stroke="none"/>
+<text x="472.00" y="320.40" font-family="Microsoft YaHei" font-size="1.835" fill="#6b7280" font-weight="normal" text-anchor="start">口径</text>
+<rect x="200.00" y="244.00" width="146.00" height="74.00" rx="3.0" fill="#fff7ed" stroke="#ea8a3c" stroke-width="0.85"/>
+<rect x="200.00" y="244.00" width="2.80" height="74.00" rx="0.9" fill="#d97706" stroke="none" stroke-width="0.3"/>
+<text x="205.40" y="254.00" font-family="Microsoft YaHei" font-size="4.234" fill="#9a3412" font-weight="bold" text-anchor="start">研判引擎</text>
+<text x="342.00" y="253.40" font-family="Microsoft YaHei" font-size="2.893" fill="#c2410c" font-weight="bold" text-anchor="end">④ 执行批次</text>
+<text x="205.40" y="261.40" font-family="Microsoft YaHei" font-size="2.470" fill="#7c2d12" font-weight="normal" text-anchor="start">按规则取权重 → 逐对象匹配 → 打分 → 过阈值出线索</text>
+<text x="205.40" y="267.60" font-family="Microsoft YaHei" font-size="2.470" fill="#7c2d12" font-weight="normal" text-anchor="start">读：特征库（权重/阈值/口径）＋ 信息库（流水）</text>
+<text x="205.40" y="273.80" font-family="Microsoft YaHei" font-size="2.470" fill="#7c2d12" font-weight="normal" text-anchor="start">写：batch / score / 明细 / clue</text>
+<rect x="205.40" y="277.60" width="43.00" height="7.00" rx="1.5" fill="#ffffff" stroke="#fdba74" stroke-width="0.32"/>
+<text x="226.90" y="282.60" font-family="Consolas" font-size="1.976" fill="#9a3412" font-weight="normal" text-anchor="middle">PRC sp_upsert_score</text>
+<rect x="250.40" y="277.60" width="42.00" height="7.00" rx="1.5" fill="#ffffff" stroke="#fdba74" stroke-width="0.32"/>
+<text x="271.40" y="282.60" font-family="Microsoft YaHei" font-size="1.976" fill="#9a3412" font-weight="normal" text-anchor="middle">重跑：已核查跳过</text>
+<rect x="294.40" y="277.60" width="47.00" height="7.00" rx="1.5" fill="#ffffff" stroke="#fdba74" stroke-width="0.32"/>
+<text x="317.90" y="282.60" font-family="Microsoft YaHei" font-size="1.976" fill="#9a3412" font-weight="normal" text-anchor="middle">UNIQUE 防重复</text>
+<text x="205.40" y="292.40" font-family="Microsoft YaHei" font-size="2.258" fill="#b45309" font-weight="normal" text-anchor="start">8 条特征：F001 夜间场所 · F002 含酒水 · F003 无代驾 · F004 自驾驶出</text>
+<text x="205.40" y="298.00" font-family="Microsoft YaHei" font-size="2.258" fill="#b45309" font-weight="normal" text-anchor="start">F005 离家远 · F006 有代驾(反例) · F008 历史涉案 · F009 历史醉驾</text>
+<text x="205.40" y="304.80" font-family="Microsoft YaHei" font-size="2.117" fill="#9a3412" font-weight="normal" text-anchor="start">口径参数 history_cutoff 由 param_config 提供：引擎与案例统计共用一个时点</text>
+<text x="205.40" y="310.20" font-family="Microsoft YaHei" font-size="2.117" fill="#9a3412" font-weight="normal" text-anchor="start">可复现：批次记 rule_id + version_id 快照，事后能重算当时的分</text>
+<text x="205.40" y="315.60" font-family="Microsoft YaHei" font-size="2.117" fill="#9a3412" font-weight="normal" text-anchor="start">评估时才 LEFT JOIN eval_label；研判过程绝不读答案</text>
+<rect x="6.00" y="322.00" width="500.00" height="36.00" rx="2.6" fill="#f5f5f6" stroke="#a9adb5" stroke-width="0.6" stroke-dasharray="2.8 1.8"/>
+<text x="10.60" y="335.40" font-family="Microsoft YaHei" font-size="7.056" fill="#374151" font-weight="bold" text-anchor="start">安全支撑库</text>
+<text x="10.80" y="342.60" font-family="Microsoft YaHei" font-size="2.328" fill="#6b7280" font-weight="normal" text-anchor="start">5 张 · 横切所有库（鉴权 / 留痕 / 口径）</text>
+<text x="10.80" y="348.40" font-family="Microsoft YaHei" font-size="2.258" fill="#6b7280" font-weight="normal" text-anchor="start">不反向引用业务数据，业务表只向它取“谁做的”</text>
+<rect x="96.00" y="326.00" width="78.00" height="28.00" rx="2.0" fill="#ffffff" stroke="#afb3ba" stroke-width="0.45"/>
+<rect x="96.00" y="326.00" width="2.00" height="28.00" rx="0.9" fill="#6B7280" stroke="none" stroke-width="0.3"/>
+<text x="101.00" y="334.40" font-family="Microsoft YaHei" font-size="3.704" fill="#6B7280" font-weight="bold" text-anchor="start">用户表</text>
+<text x="101.00" y="340.40" font-family="Consolas" font-size="2.964" fill="#0f172a" font-weight="bold" text-anchor="start">sys_user</text>
+<text x="101.00" y="346.00" font-family="Microsoft YaHei" font-size="2.328" fill="#6b7280" font-weight="normal" text-anchor="start">账号，所有“谁做的”指向它</text>
+<text x="170.00" y="334.20" font-family="Consolas" font-size="2.046" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<rect x="178.00" y="326.00" width="78.00" height="28.00" rx="2.0" fill="#ffffff" stroke="#afb3ba" stroke-width="0.45"/>
+<rect x="178.00" y="326.00" width="2.00" height="28.00" rx="0.9" fill="#6B7280" stroke="none" stroke-width="0.3"/>
+<text x="183.00" y="334.40" font-family="Microsoft YaHei" font-size="3.704" fill="#6B7280" font-weight="bold" text-anchor="start">角色表</text>
+<text x="183.00" y="340.40" font-family="Consolas" font-size="2.964" fill="#0f172a" font-weight="bold" text-anchor="start">sys_role</text>
+<text x="183.00" y="346.00" font-family="Microsoft YaHei" font-size="2.328" fill="#6b7280" font-weight="normal" text-anchor="start">五类角色的定义</text>
+<text x="252.00" y="334.20" font-family="Consolas" font-size="2.046" fill="#9ca3af" font-weight="normal" text-anchor="end">5 行</text>
+<rect x="260.00" y="326.00" width="78.00" height="28.00" rx="2.0" fill="#ffffff" stroke="#afb3ba" stroke-width="0.45"/>
+<rect x="260.00" y="326.00" width="2.00" height="28.00" rx="0.9" fill="#6B7280" stroke="none" stroke-width="0.3"/>
+<text x="265.00" y="334.40" font-family="Microsoft YaHei" font-size="3.704" fill="#6B7280" font-weight="bold" text-anchor="start">用户角色</text>
+<text x="265.00" y="340.40" font-family="Consolas" font-size="2.964" fill="#0f172a" font-weight="bold" text-anchor="start">sys_user_role</text>
+<text x="265.00" y="346.00" font-family="Microsoft YaHei" font-size="2.328" fill="#6b7280" font-weight="normal" text-anchor="start">用户 × 角色的多对多</text>
+<text x="334.00" y="334.20" font-family="Consolas" font-size="2.046" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<rect x="342.00" y="326.00" width="78.00" height="28.00" rx="2.0" fill="#ffffff" stroke="#afb3ba" stroke-width="0.45"/>
+<rect x="342.00" y="326.00" width="2.00" height="28.00" rx="0.9" fill="#6B7280" stroke="none" stroke-width="0.3"/>
+<text x="347.00" y="334.40" font-family="Microsoft YaHei" font-size="3.704" fill="#6B7280" font-weight="bold" text-anchor="start">审计日志</text>
+<text x="347.00" y="340.40" font-family="Consolas" font-size="2.964" fill="#0f172a" font-weight="bold" text-anchor="start">audit_log</text>
+<text x="347.00" y="346.00" font-family="Microsoft YaHei" font-size="2.328" fill="#6b7280" font-weight="normal" text-anchor="start">谁 + 何时 + 改了什么</text>
+<text x="416.00" y="334.20" font-family="Consolas" font-size="2.046" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<rect x="424.00" y="326.00" width="78.00" height="28.00" rx="2.0" fill="#ffffff" stroke="#afb3ba" stroke-width="0.45"/>
+<rect x="424.00" y="326.00" width="2.00" height="28.00" rx="0.9" fill="#6B7280" stroke="none" stroke-width="0.3"/>
+<text x="429.00" y="334.40" font-family="Microsoft YaHei" font-size="3.704" fill="#6B7280" font-weight="bold" text-anchor="start">参数配置</text>
+<text x="429.00" y="340.40" font-family="Consolas" font-size="2.964" fill="#0f172a" font-weight="bold" text-anchor="start">param_config</text>
+<text x="429.00" y="346.00" font-family="Microsoft YaHei" font-size="2.328" fill="#6b7280" font-weight="normal" text-anchor="start">全库口径参数，含 history_cutoff</text>
+<text x="498.00" y="334.20" font-family="Consolas" font-size="2.046" fill="#9ca3af" font-weight="normal" text-anchor="end">10 行</text>
+<rect x="6.00" y="362.00" width="582.00" height="26.00" rx="2.0" fill="#f8fafc" stroke="#e2e8f0" stroke-width="0.4"/>
+<text x="10.80" y="368.80" font-family="Microsoft YaHei" font-size="2.822" fill="#334155" font-weight="bold" text-anchor="start">全库唯一时间轴</text>
+<text x="48.00" y="368.60" font-family="Microsoft YaHei" font-size="2.187" fill="#6b7280" font-weight="normal" text-anchor="start">history_cutoff 只写一处（param_config），改它 = 滚动一轮；视图 v_case_history 按它过滤</text>
+<rect x="10.00" y="372.20" width="288.00" height="10.20" rx="1.4" fill="#c0d3e4" stroke="none" stroke-width="0.3"/>
+<rect x="298.00" y="372.20" width="190.00" height="10.20" rx="1.4" fill="#bcdcdc" stroke="none" stroke-width="0.3"/>
+<rect x="488.00" y="372.20" width="94.00" height="10.20" rx="1.4" fill="#fae3e3" stroke="none" stroke-width="0.3"/>
+<text x="13.80" y="379.20" font-family="Microsoft YaHei" font-size="2.258" fill="#1e3a5f" font-weight="normal" text-anchor="start">历史段 2026-09-01 → 10-31 ｜ 写 case_info / 对照人群 / 流水 ｜ 算 P1、P0</text>
+<text x="301.80" y="379.20" font-family="Microsoft YaHei" font-size="2.258" fill="#12504f" font-weight="normal" text-anchor="start">观察段 2026-11-01 → 11-30 ｜ 只写流水 + eval_label</text>
+<text x="491.80" y="379.20" font-family="Microsoft YaHei" font-size="2.258" fill="#9b2c2c" font-weight="bold" text-anchor="start">↺ 滚动到下一轮</text>
+<path d="M 298.00 369.60 L 298.00 385.20" fill="none" stroke="#b45309" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.4 1.0" opacity="1.0"/>
+<text x="294.00" y="370.20" font-family="Microsoft YaHei" font-size="2.082" fill="#b45309" font-weight="bold" text-anchor="end">history_cutoff = 2026-11-01 00:00:00</text>
+<rect x="6.00" y="392.00" width="424.00" height="24.00" rx="2.0" fill="#fcfdff" stroke="#e2e8f0" stroke-width="0.4"/>
+<rect x="10.50" y="394.20" width="4.40" height="4.40" rx="0.8" fill="#2E6DA4" stroke="none" stroke-width="0.3"/>
+<text x="16.70" y="398.20" font-family="Microsoft YaHei" font-size="2.399" fill="#374151" font-weight="normal" text-anchor="start">案例库</text>
+<rect x="30.90" y="394.20" width="4.40" height="4.40" rx="0.8" fill="#7B5EA7" stroke="none" stroke-width="0.3"/>
+<text x="37.10" y="398.20" font-family="Microsoft YaHei" font-size="2.399" fill="#374151" font-weight="normal" text-anchor="start">特征库</text>
+<rect x="51.29" y="394.20" width="4.40" height="4.40" rx="0.8" fill="#1F8A8A" stroke="none" stroke-width="0.3"/>
+<text x="57.49" y="398.20" font-family="Microsoft YaHei" font-size="2.399" fill="#374151" font-weight="normal" text-anchor="start">信息库</text>
+<rect x="71.69" y="394.20" width="4.40" height="4.40" rx="0.8" fill="#D97706" stroke="none" stroke-width="0.3"/>
+<text x="77.89" y="398.20" font-family="Microsoft YaHei" font-size="2.399" fill="#374151" font-weight="normal" text-anchor="start">研判线索库</text>
+<rect x="96.89" y="394.20" width="4.40" height="4.40" rx="0.8" fill="#6B7280" stroke="none" stroke-width="0.3"/>
+<text x="103.09" y="398.20" font-family="Microsoft YaHei" font-size="2.399" fill="#374151" font-weight="normal" text-anchor="start">安全支撑库</text>
+<path d="M 125.08 396.40 L 136.08 396.40" fill="none" stroke="#475569" stroke-width="1.0" stroke-linecap="round" stroke-linejoin="round" opacity="1.0"/><path d="M 136.08 396.40 L 132.85 397.73 L 132.85 395.07 Z" fill="#475569" stroke="none"/>
+<text x="137.88" y="398.30" font-family="Microsoft YaHei" font-size="2.328" fill="#374151" font-weight="normal" text-anchor="start">数据写入</text>
+<path d="M 153.70 396.40 L 164.70 396.40" fill="none" stroke="#7c3aed" stroke-width="0.65" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1.4 1.0" opacity="1.0"/><path d="M 164.70 396.40 L 161.47 397.73 L 161.47 395.07 Z" fill="#7c3aed" stroke="none"/>
+<text x="166.50" y="398.30" font-family="Microsoft YaHei" font-size="2.328" fill="#374151" font-weight="normal" text-anchor="start">只读</text>
+<path d="M 177.65 396.40 L 188.65 396.40" fill="none" stroke="#e05252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="1.0"/><path d="M 188.65 396.40 L 185.42 397.73 L 185.42 395.07 Z" fill="#e05252" stroke="none"/>
+<text x="190.45" y="398.30" font-family="Microsoft YaHei" font-size="2.328" fill="#374151" font-weight="normal" text-anchor="start">闭环回流</text>
+<path d="M 206.27 396.40 L 217.27 396.40" fill="none" stroke="#6b7280" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0.9 0.8" opacity="1.0"/><path d="M 217.27 396.40 L 214.04 397.73 L 214.04 395.07 Z" fill="#6b7280" stroke="none"/>
+<text x="219.07" y="398.30" font-family="Microsoft YaHei" font-size="2.328" fill="#374151" font-weight="normal" text-anchor="start">横切</text>
+<rect x="10.50" y="402.60" width="9.40" height="4.40" rx="0.7" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.28"/>
+<text x="15.20" y="406.00" font-family="Consolas" font-size="1.764" fill="#3730a3" font-weight="bold" text-anchor="middle">TRG</text>
+<text x="21.10" y="406.00" font-family="Microsoft YaHei" font-size="2.187" fill="#374151" font-weight="normal" text-anchor="start">触发器</text>
+<rect x="32.66" y="402.60" width="9.40" height="4.40" rx="0.7" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.28"/>
+<text x="37.36" y="406.00" font-family="Consolas" font-size="1.764" fill="#3730a3" font-weight="bold" text-anchor="middle">PRC</text>
+<text x="43.26" y="406.00" font-family="Microsoft YaHei" font-size="2.187" fill="#374151" font-weight="normal" text-anchor="start">存储过程</text>
+<rect x="57.01" y="402.60" width="9.40" height="4.40" rx="0.7" fill="#eef2ff" stroke="#c7d2fe" stroke-width="0.28"/>
+<text x="61.71" y="406.00" font-family="Consolas" font-size="1.764" fill="#3730a3" font-weight="bold" text-anchor="middle">VEW</text>
+<text x="67.61" y="406.00" font-family="Microsoft YaHei" font-size="2.187" fill="#374151" font-weight="normal" text-anchor="start">视图</text>
+<text x="78.99" y="406.00" font-family="Microsoft YaHei" font-size="2.187" fill="#9ca3af" font-weight="normal" text-anchor="start">｜ 卡片 = 中文名 + 表名 + 一句话；右上角是示例库行数</text>
+<text x="10.50" y="413.20" font-family="Microsoft YaHei" font-size="2.187" fill="#6b7280" font-weight="normal" text-anchor="start">读图：案例库出经验 → 特征库存经验 → 信息库被经验扫描 → 线索库存结果 → 评估给答案；珊瑚色两条是闭环，灰虚线框是横切层。</text>
+<rect x="436.00" y="392.00" width="152.00" height="24.00" rx="2.0" fill="#fff8f8" stroke="#f3c7c7" stroke-width="0.4"/>
+<text x="440.00" y="397.60" font-family="Microsoft YaHei" font-size="1.976" fill="#7f1d1d" font-weight="normal" text-anchor="start">① 信息库 person/area/vehicle 必须能在主数据找到</text>
+<text x="440.00" y="402.80" font-family="Microsoft YaHei" font-size="1.976" fill="#7f1d1d" font-weight="normal" text-anchor="start">② match_src 不得出现 case_info（CHECK 拦截）</text>
+<text x="440.00" y="408.00" font-family="Microsoft YaHei" font-size="1.976" fill="#7f1d1d" font-weight="normal" text-anchor="start">③ 观察段流水 ≥ cutoff、历史案件 &lt; cutoff</text>
+<text x="440.00" y="413.20" font-family="Microsoft YaHei" font-size="1.905" fill="#b06060" font-weight="normal" text-anchor="start">score.total_score = 明细 weight 之和（可复算）</text>
+</svg>
