@@ -39,7 +39,7 @@
           <el-table-column label="研判源" width="140" class-name="col-match">
             <template #default="{ row }"><SrcCell :table="row.match_src" strong /></template>
           </el-table-column>
-          <el-table-column label="权重" width="95" align="right">
+          <el-table-column label="统计权重" width="95" align="right">
             <template #default="{ row }">
               <span class="num mono" :class="row.weight < 0 ? 'neg' : ''">{{ signed(row.weight) }}</span>
             </template>
@@ -47,9 +47,8 @@
           <el-table-column label="提升度" width="80" align="right"><template #default="{ row }"><span class="num">{{ fixed(row.lift) }}</span></template></el-table-column>
           <el-table-column label="状态" width="110" align="center">
             <template #default="{ row }">
-              <el-switch v-if="auth.can('feature.status')" :model-value="row.status === 1" inline-prompt active-text="启用" inactive-text="停用"
-                :loading="toggling === row.feature_id" @click.stop @change="(v) => toggle(row, v)" />
-              <StatusTag v-else type="enable_status" :value="row.status" />
+              <StatusTag type="enable_status" :value="row.status" />
+              <router-link v-if="auth.can('feature.status')" :to="{name:'data',query:{resource:'rules'}}" class="small">草稿配置</router-link>
             </template>
           </el-table-column>
         </el-table>
@@ -105,7 +104,7 @@ async function toggle(row, enabled) {
 .clickable-rows :deep(tr) { cursor: pointer; }
 /* 用一条竖线把训练源与研判源分开，视觉上强调双口径（《前端交接文档》D1 原型要点） */
 :deep(.col-match) { border-left: 1px solid var(--el-color-primary) !important; }
-:deep(th.col-train), :deep(th.col-match) { background: #f1f4f1 !important; }
+:deep(th.col-train), :deep(th.col-match) { background: var(--surface-raised) !important; }
 :deep(.src-strong) { color: var(--el-color-primary); font-weight: 600; }
 :deep(.src-label) { font-size: 12px; color: var(--text-muted); }
 .neg { color: var(--el-color-success); }

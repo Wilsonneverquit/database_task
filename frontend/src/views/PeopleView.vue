@@ -1,0 +1,40 @@
+<template>
+  <div class="page"><div class="page-head"><div><h2>人员风险</h2><p class="sub">默认从观察期风险较高的人员开始查看，无需事先知道编号。峰值是历史时点，不代表此刻仍处于高风险。</p></div></div>
+    <section v-if="recommend.data.value?.list.length" class="recommendations" aria-label="高风险人员推荐"><div class="card-title">推荐关注<span class="hint">观察期峰值较高的人员，点击直接查看</span></div><div class="recommend-list"><button v-for="p in recommend.data.value.list" :key="p.person_id" @click="openRecommended(p)"><div><strong class="mono">{{ p.person_id }}</strong><LevelTag :level="p.risk_level" /></div><b class="num">{{ fixed(p.total_score) }}<small> / 100</small></b><span>{{ p.area_name }} · {{ p.window_start.slice(0,16) }}</span></button></div></section>
+    <div class="toolbar"><el-input v-model="filters.q" placeholder="人员编号，支持部分输入，如 P001" clearable aria-label="搜索人员编号" style="width:280px" @change="reload" @keyup.enter="reload" /><el-radio-group v-model="filters.mode" aria-label="人员风险统计口径" @change="reload"><el-radio-button value="peak">观察期峰值</el-radio-button><el-radio-button value="latest">最近时段</el-radio-button></el-radio-group><el-date-picker v-model="queryRange" type="daterange" value-format="YYYY-MM-DD" start-placeholder="评分起始日期" end-placeholder="评分结束日期" range-separator="至" @change="reload" /><el-button @click="clearSearch">清空搜索</el-button></div>
+    <p v-if="data?.total===0" class="empty-help">没有匹配评分的人员。可输入部分编号、清空搜索，或点击上方推荐对象。</p>
+    <div class="people-workspace"><el-card shadow="never"><template #header><div class="card-title">人员列表<span class="hint">{{ filters.mode==='peak'?'观察期峰值':'每人最近时段' }} · {{ data?.total || 0 }} 人</span></div></template><AsyncState :data="data" :loading="loading" :error="error" empty-text="没有匹配评分，可使用推荐人员或清空筛选" @retry="load"><el-table v-if="data" :data="data.list" highlight-current-row :max-height="460" @row-click="showPerson"><el-table-column prop="person_id" label="人员" width="85" /><el-table-column :label="filters.mode==='peak'?'峰值指数':'时段指数'" width="90"><template #default="{row}">{{ fixed(row.total_score) }}</template></el-table-column><el-table-column label="等级" width="90"><template #default="{row}"><LevelTag :level="row.risk_level" /></template></el-table-column><el-table-column label="发生时点 / 区域" min-width="175"><template #default="{row}">{{ row.window_start.slice(0,16) }}<div class="muted small">{{ row.area_name }}</div></template></el-table-column><el-table-column label="详情" width="70"><template #default="{row}"><el-button link type="primary" @click.stop="showPerson(row)">查看</el-button></template></el-table-column></el-table><el-pagination v-if="data" v-model:current-page="filters.page" :total="data.total" :page-size="20" layout="prev,pager,next" @current-change="load" /></AsyncState></el-card>
+    <section v-if="selected" ref="personPanel" class="person-detail"><el-card shadow="never"><template #header><div class="card-title"><span class="mono">{{ selected.person_id }}</span><router-link :to="{name:'risk-detail',params:{scoreId:selected.score_id}}">评分解释 →</router-link></div></template><p>选定评分 {{ fixed(selected.total_score) }} · {{ selected.window_start }} · {{ selected.area_name }}</p><router-link :to="{name:'evidence',query:{scope:'person',person_id:selected.person_id,date:selected.window_start.slice(0,10)}}">查看该人员的事件证据链 →</router-link><EChart :option="chart" height="230px" /><p class="muted small">横轴：北京时间；纵轴：风险指数（0–100）。同一版本、同一时段取最新成功批次。</p></el-card>
+      <el-card shadow="never"><template #header><div class="card-title">事件流水<span class="hint">默认展示选定评分当天；车辆归属关联需核实驾驶人</span></div></template><el-date-picker v-model="timelineRange" type="daterange" value-format="YYYY-MM-DD" range-separator="至" start-placeholder="流水起始日期" end-placeholder="流水结束日期" @change="reloadTimeline" /><AsyncState :data="timeline.data.value" :loading="timeline.loading.value" :error="timeline.error.value" @retry="timeline.run"><el-timeline v-if="timeline.data.value" class="person-timeline"><el-timeline-item v-for="e in timeline.data.value.list" :key="`${e.kind}:${e.source_id}`" :timestamp="e.event_at" placement="top" :type="e.certainty==='association'?'warning':'primary'"><div>{{ e.description }}</div><span class="mono muted small">{{ e.kind }} #{{ e.source_id }}</span></el-timeline-item></el-timeline><el-pagination v-if="timeline.data.value" v-model:current-page="timelinePage" :total="timeline.data.value.total" :page-size="20" layout="prev,pager,next" @current-change="timeline.run" /></AsyncState></el-card></section>
+    </div>
+  </div>
+</template>
+<script setup>
+import {computed,reactive,ref,watch,nextTick} from 'vue'
+import {useRoute} from 'vue-router'
+import {api} from '@/api'
+import {useAsync} from '@/composables/useAsync'
+import {fixed,halfOpenRange} from '@/utils/format'
+import AsyncState from '@/components/AsyncState.vue'
+import LevelTag from '@/components/LevelTag.vue'
+import EChart from '@/components/EChart.vue'
+const personPanel=ref(null)
+const route=useRoute(),selected=ref(null),queryRange=ref([]),timelineRange=ref([]),timelinePage=ref(1)
+const filters=reactive({q:String(route.query.person_id||''),mode:'peak',page:1,size:20})
+const recommend=useAsync(()=>api.people({mode:'peak',size:3}))
+const {data,loading,error,run:load}=useAsync(()=>api.people({...filters,...halfOpenRange(queryRange.value)}))
+const trend=useAsync(()=>selected.value?api.trends({person_id:selected.value.person_id,version_id:selected.value.version_id}):Promise.resolve([]),{immediate:false})
+const timeline=useAsync(()=>selected.value?api.personTimeline(selected.value.person_id,{...halfOpenRange(timelineRange.value),page:timelinePage.value,size:20}):Promise.resolve({list:[],total:0}),{immediate:false})
+function reload(){filters.page=1;selected.value=null;return load()}
+function clearSearch(){filters.q='';queryRange.value=[];reload()}
+function select(row){selected.value=row;timelinePage.value=1;const day=row.window_start.slice(0,10);timelineRange.value=[day,day];trend.run();timeline.run()}
+async function reveal(){await nextTick();personPanel.value?.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'})}
+function showPerson(row){select(row);reveal()}
+async function openRecommended(row){filters.mode='peak';filters.q=row.person_id;queryRange.value=[];await reload();reveal()}
+watch(data,d=>{if(d?.list.length)select(d.list[0]);else selected.value=null})
+function reloadTimeline(){timelinePage.value=1;timeline.run()}
+const chart=computed(()=>({tooltip:{trigger:'axis'},grid:{left:45,right:20,top:30,bottom:35},xAxis:{type:'category',name:'时间',data:(trend.data.value||[]).map(r=>r.window_start.slice(5,16))},yAxis:{type:'value',name:'风险指数',min:0,max:100},series:[{type:'line',showSymbol:false,connectNulls:false,data:(trend.data.value||[]).map(r=>r.total_score),lineStyle:{color:'#345fc5'}}]}))
+</script>
+<style scoped>
+.recommendations{display:grid;gap:16px}.recommend-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.recommend-list button{text-align:left;background:var(--surface);border:1px solid var(--card-border);padding:18px 20px;border-radius:10px;display:grid;gap:12px;cursor:pointer;color:var(--text-primary)}.recommend-list button:hover{border-color:var(--accent)}.recommend-list button>div{display:flex;justify-content:space-between;gap:8px;align-items:center}.recommend-list b{font-size:28px;font-family:var(--font-data);font-weight:500}.recommend-list b small,.recommend-list button>span{font-size:12px;font-weight:400;color:var(--text-muted)}.people-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}.person-detail{display:grid;gap:24px}.person-timeline{padding:24px 0 0 8px}.small{font-size:12px;line-height:1.8}.empty-help{color:var(--text-secondary);margin:0}.el-pagination{margin-top:20px}.toolbar .el-date-editor{max-width:100%}@media(max-width:1100px){.people-workspace{grid-template-columns:minmax(0,1fr)}}@media(max-width:600px){.recommend-list{grid-template-columns:1fr}.recommend-list button{padding:14px 16px}}
+</style>

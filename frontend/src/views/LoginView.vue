@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="panel">
-      <div class="intro">
+      <div class="intro"><el-icon class="intro-symbol" :size="38"><Odometer /></el-icon>
         <h1>多风险特征预警系统</h1>
         <p class="lead">以酒驾为例 · 数据库原理课程设计 · 第 6 组</p>
         <ul>
@@ -24,7 +24,7 @@
           <el-button type="primary" native-type="submit" :loading="loading" class="full">登录</el-button>
         </el-form>
 
-        <div v-if="API_MODE === 'mock'" class="demo">
+        <div class="demo">
           <div class="muted small">演示账号（取自示例库，口令均为 123456），点击填入：</div>
           <div class="accounts">
             <el-button v-for="a in DEMO" :key="a.username" size="small" @click="fill(a.username)">
@@ -85,11 +85,11 @@ async function submit() {
 </script>
 
 <style scoped>
-.login { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 24px; background: var(--page-bg); }
-.panel { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; max-width: 980px; width: 100%; align-items: center; }
+.login { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 24px; background:linear-gradient(135deg,#142740,var(--page-bg) 65%); }
+.panel { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 40px; max-width: 1060px; width: 100%; align-items: center; }
 @media (max-width: 860px) { .panel { grid-template-columns: minmax(0, 1fr); } }
 .intro { color: var(--text-primary); }
-.intro h1 { font-size: 32px; font-weight:500; margin: 0 0 8px; }
+.intro h1 { font-size:clamp(28px,3vw,38px); font-weight:600; margin: 0 0 8px; }
 .lead { color: var(--text-secondary); margin: 0 0 20px; }
 .intro ul { padding-left: 18px; line-height: 2; color: var(--text-secondary); }
 .boundary { margin-top: 20px; font-size: 13px; color: var(--text-muted); border-left: 1px solid var(--card-border); padding-left: 16px; line-height: 1.7; }
@@ -100,4 +100,5 @@ async function submit() {
 .small { font-size: 12px; }
 .accounts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .accounts .el-button { margin-left: 0; }
+.intro-symbol{color:var(--accent-ink);margin-bottom:26px}.intro h1{letter-spacing:-.025em;line-height:1.4}.intro .lead{line-height:1.8;margin-bottom:28px}.intro ul{padding-left:20px;font-size:14px;line-height:2.1}.intro .boundary{max-width:48ch}.form-card :deep(.el-card__body){padding:32px}.form-card h3{font-size:22px;font-weight:500;margin-bottom:26px}.full{min-height:42px;margin-top:6px}.accounts .el-button{height:auto;min-height:34px;padding:8px 10px;flex-wrap:wrap}.demo{line-height:1.8}@media(max-width:600px){.login{padding:24px 16px;align-items:flex-start}.panel{gap:24px}.intro-symbol{margin-bottom:16px}.form-card :deep(.el-card__body){padding:22px}.intro .boundary{max-width:none}}
 </style>

@@ -52,7 +52,7 @@
           <template #header><div class="card-title">各版本权重变化</div></template>
           <EChart :option="chartOption" height="240px" />
           <p class="muted small">
-            示例库中只有现行版本 1.0 有命中统计与权重；0.9（已归档）与 2.0（草稿）没有权重记录，图中显示为空。
+            统计权重按版本保存；草稿计算后才有记录。这里的对数优势比用于历史比较，风险指数使用规则中的连续因子系数。
           </p>
           <el-table :data="data.weights" size="small" border>
             <el-table-column label="版本" width="150"><template #default="{ row }"><span class="mono">{{ row.version_id }}</span> v{{ row.version_no }}</template></el-table-column>
@@ -124,7 +124,7 @@ const chartOption = computed(() => {
       type: 'line', connectNulls: false, symbolSize: 10,
       data: versions.map((v) => byVersion[v.version_id] ?? null),
       label: { show: true, formatter: (p) => (p.value === null ? '' : signed(p.value)) },
-      markLine: { silent: true, symbol: 'none', data: [{ yAxis: 0 }], lineStyle: { color: '#c0c4cc' } },
+      markLine: { silent: true, symbol: 'none', data: [{ yAxis: 0 }], lineStyle: { color: '#6d83a0' } },
     }],
   }
 })

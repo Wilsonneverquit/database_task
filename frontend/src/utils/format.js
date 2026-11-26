@@ -27,7 +27,7 @@ export function objectLabel(o, areaName) {
   if (o.object_type === 2) return `个人对象 ${o.person_id || o.object_id}`
   const name = areaName || o.area_name || o.area_id
   const day = o.day_type === 1 ? '工作日' : o.day_type === 2 ? '周末' : (o.day_type_name || '')
-  return `${name} · ${day} · ${pad2(o.hour_slot)} 点`
+  return `${name} · ${o.window_start?.slice(0,10) || day} · ${pad2(o.hour_slot)} 点`
 }
 
 // 通用脱敏：保留首尾，中间打码（身份证、手机号、车牌等一律不出明文）

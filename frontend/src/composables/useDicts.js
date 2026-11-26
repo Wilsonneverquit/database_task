@@ -5,6 +5,12 @@ import { api } from '@/api'
 const dicts = ref(null)
 let pending = null
 
+export async function refreshDicts() {
+  const value=await api.dicts()
+  dicts.value=value
+  return value
+}
+
 export function useDicts() {
   if (!dicts.value && !pending) {
     pending = api.dicts().then((d) => { dicts.value = d }).catch(() => {}).finally(() => { pending = null })

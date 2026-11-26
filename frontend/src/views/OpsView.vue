@@ -23,7 +23,7 @@
             <template #default="{ row }">
               <el-button v-if="row.publish_status !== 1" link type="primary" @click="publish(row)">{{ row.publish_status === 2 ? '回滚发布' : '发布' }}</el-button>
               <el-button v-if="row.publish_status === 1" link type="warning" @click="archive(row)">归档</el-button>
-              <el-button v-if="auth.can('weight.recalc')" link :loading="recalcing === row.version_id" @click="recalc(row)">重算权重</el-button>
+              <el-button v-if="auth.can('weight.recalc') && row.publish_status===0" link :loading="recalcing === row.version_id" @click="recalc(row)">计算草稿</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -107,7 +107,7 @@ import { api, API_MODE } from '@/api'
 import { enumLabel, enumOptions } from '@/constants/enums'
 import { useAuthStore } from '@/stores/auth'
 import { useAsync } from '@/composables/useAsync'
-import { useDicts } from '@/composables/useDicts'
+import { useDicts, refreshDicts } from '@/composables/useDicts'
 import AsyncState from '@/components/AsyncState.vue'
 import StatusTag from '@/components/StatusTag.vue'
 
@@ -127,6 +127,7 @@ async function publish(row) {
   if (!(await confirm(`发布 v${row.version_no} 后，当前已发布版本会自动归档（同一风险类型只能有一个已发布版本）。${warn}`, '发布版本'))) return
   try {
     await api.publishVersion(row.version_id, { publish_status: 1 })
+    await refreshDicts()
     ElMessage.success('已发布')
     versions.run()
   } catch (e) { ElMessage.error(e.message) }
@@ -145,8 +146,9 @@ async function recalc(row) {
   recalcing.value = row.version_id
   try {
     const r = await api.recalcWeights({ version_id: row.version_id })
+    await refreshDicts()
     if (r.feature_cnt === 0) ElMessage.warning('该版本没有命中统计记录，无权重可算')
-    else ElMessage.success(`已重算 ${r.feature_cnt} 条权重，其中 ${r.changed_cnt} 条发生变化（变化会写入审计日志）`)
+    else ElMessage.success(`已统计 ${r.feature_cnt} 项，历史权重变动 ${r.changed_cnt} 项，反馈修订 ${r.feedback_factor_cnt || 0} 项；草稿规则已更新`)
     versions.run()
   } catch (e) { ElMessage.error(e.message) } finally { recalcing.value = null }
 }

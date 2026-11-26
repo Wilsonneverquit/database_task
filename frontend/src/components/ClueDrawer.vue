@@ -18,6 +18,7 @@
           <el-step title="待核查" /><el-step title="核查中" /><el-step :title="data.clue.clue_status === 3 ? '已排除' : data.clue.clue_status === 2 ? '已确认' : '核查结果'" />
         </el-steps>
         <el-tabs v-model="activeTab">
+          <el-tab-pane label="证据链" name="chain"><EvidenceChain v-if="activeTab==='chain'" :clue-id="clueId" /></el-tab-pane>
           <el-tab-pane label="命中依据" name="evidence">
         <div class="section">
           <div class="section-title">
@@ -84,12 +85,13 @@ import StatusTag from './StatusTag.vue'
 import ClueActions from './ClueActions.vue'
 import FeatureJudgeTable from './FeatureJudgeTable.vue'
 import FeedbackDialog from './FeedbackDialog.vue'
+import EvidenceChain from './EvidenceChain.vue'
 
 const props = defineProps({ clueId: { type: String, default: null } })
 const emit = defineEmits(['close', 'changed'])
 const auth = useAuthStore()
 
-const activeTab = ref('evidence')
+const activeTab = ref('chain')
 const data = ref(null)
 const loading = ref(false)
 const error = ref(null)
@@ -108,7 +110,7 @@ async function load() {
     loading.value = false
   }
 }
-watch(() => props.clueId, (id) => { data.value = null; activeTab.value = 'evidence'; if (id) load() }, { immediate: true })
+watch(() => props.clueId, (id) => { data.value = null; activeTab.value = 'chain'; if (id) load() }, { immediate: true })
 
 // 只显示合法的流转按钮；没有写权限（如教师）则不显示任何操作
 const canAct = computed(() => auth.can('clue.feedback') && [0, 1].includes(data.value?.clue.clue_status))

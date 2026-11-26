@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="page-head"><div><h2>区域时段风险</h2><p class="sub">研判对象 = 区域 + 日期类型 + 小时。数据来自视图 v_region_risk，点击行查看逐条特征判定明细。</p></div></div>
+    <div class="page-head"><div><h2>区域时段风险</h2><p class="sub">研判对象 = 区域 + 具体日期 + 小时。点击评分查看连续因子贡献、证据来源和风险趋势。</p></div></div>
     <el-card shadow="never">
       <div class="toolbar filter-bar">
         <el-select v-model="filters.batch_id" aria-label="筛选研判批次" placeholder="全部批次" clearable filterable class="batch-filter" @change="reload"><el-option v-for="b in batchOptions" :key="b.batch_id" :label="b.batch_id" :value="b.batch_id" /></el-select>
@@ -13,10 +13,10 @@
         <el-table v-if="data" :data="data.list" row-key="score_id" @row-click="open" class="clickable-rows">
           <el-table-column type="expand" width="44"><template #default="{row}"><dl class="row-details"><div><dt>批次</dt><dd class="mono">{{ row.batch_id }}</dd></div><div><dt>区域编号</dt><dd>{{ row.area_id }}</dd></div><div><dt>样本量</dt><dd>{{ row.sample_size }}</dd></div><div><dt>命中特征</dt><dd>{{ row.hit_cnt }} 项</dd></div><div><dt>是否出线索</dt><dd>{{ row.is_clue ? '已生成线索' : '未生成' }}</dd></div></dl></template></el-table-column>
           <el-table-column label="区域" min-width="130" fixed="left"><template #default="{row}"><router-link @click.stop :to="{name:'risk-detail',params:{scoreId:row.score_id}}">{{ row.area_name }}</router-link></template></el-table-column>
-          <el-table-column label="时段" width="140"><template #default="{row}">{{ row.day_type_name }}<br/><span class="num muted">{{ hourLabel(row.hour_slot) }}</span></template></el-table-column>
+          <el-table-column label="时段" width="140"><template #default="{row}">{{ row.window_start?.slice(0,10) }}<br/><span class="num muted">{{ hourLabel(row.hour_slot) }}</span></template></el-table-column>
           <el-table-column label="总分" width="90" align="right"><template #default="{row}"><b class="num">{{ fixed(row.total_score) }}</b></template></el-table-column>
-          <el-table-column label="等级" width="100"><template #default="{row}"><LevelTag :level="row.risk_level" /></template></el-table-column>
-          <el-table-column label="关键理由" min-width="210"><template #default="{row}"><div class="reasons"><el-tooltip v-for="h in parseHitFeatures(row.hit_features).slice(0,2)" :key="h.id" :content="`${h.id} · 权重 ${signed(h.weight)}`"><span class="reason">{{ featureName(h.id) }}</span></el-tooltip><span v-if="parseHitFeatures(row.hit_features).length>2" class="muted">另 {{ parseHitFeatures(row.hit_features).length-2 }} 项</span><span v-if="!row.hit_features" class="muted">无命中</span></div></template></el-table-column>
+          <el-table-column label="等级" width="100"><template #default="{row}"><LevelTag :level="row.risk_level" :status="row.risk_status" /></template></el-table-column>
+          <el-table-column label="关键理由" min-width="210"><template #default="{row}"><div class="reasons"><el-tooltip v-for="h in parseHitFeatures(row.hit_features).slice(0,2)" :key="h.id" :content="`${h.id} · 贡献 ${signed(h.weight)}`"><span class="reason">{{ featureName(h.id) }}</span></el-tooltip><span v-if="parseHitFeatures(row.hit_features).length>2" class="muted">另 {{ parseHitFeatures(row.hit_features).length-2 }} 项</span><span v-if="!row.hit_features" class="muted">无命中</span></div></template></el-table-column>
           <el-table-column label="操作" width="100" fixed="right"><template #default="{row}"><router-link @click.stop :to="{name:'risk-detail',params:{scoreId:row.score_id}}">查看详情</router-link></template></el-table-column>
         </el-table>
       </AsyncState>

@@ -4,3 +4,13 @@ __pycache__/
 
 # WorkBuddy 项目数据（本地工作记忆，不入库）
 .workbuddy/
+
+# Local services, credentials and generated artifacts
+.runtime/
+.venv/
+backend/.venv/
+backend/.env
+.pytest_cache/
+frontend/node_modules/
+frontend/dist/
+test-results/

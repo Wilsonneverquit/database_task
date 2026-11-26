@@ -12,6 +12,9 @@ export const PAGE_ROLES = {
   audit: ['R_ADMIN', 'R_TEACHER'],
   admin: ['R_ADMIN'],
   cases: ['R_FEATURE', 'R_TEACHER'],
+  people: ['R_ANALYST', 'R_TEACHER'],
+  evidence: ['R_ANALYST', 'R_TEACHER'],
+  data: ['R_DATA', 'R_ADMIN', 'R_FEATURE', 'R_TEACHER'],
 }
 
 // 写操作

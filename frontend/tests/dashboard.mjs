@@ -28,7 +28,7 @@ try {
   assert.equal(streetLayout([source[0]]).edges.length,0)
   assert.equal(streetLayout([{...source[0],lng:null}]).nodes.length,0)
   assert.notEqual(riskColor(0),riskColor(null))
-  assert.equal(riskColor(9),riskColor(20))
+  assert.notEqual(riskColor(9),riskColor(20))
   const token = 'mock-' + seed.sys_user.find((u) => u.username === 'analyst1').user_id
   const get = async (path, params = {}, as = token) => {
     const response = await mockRequest('GET', path + '?' + new URLSearchParams(params), { token: as })

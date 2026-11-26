@@ -8,7 +8,7 @@
     </template>
     <div v-if="error" class="muted">{{ error.message }}</div>
     <div v-else-if="data">
-      <div class="row"><span>表 / 行</span><span class="num">{{ data.tables }} 张 / {{ data.rows }} 行</span></div>
+      <div class="row"><span>表 / 业务流水</span><span class="num">{{ data.tables }} 张 / {{ data.rows }} 行</span></div>
       <div v-for="c in CHECKS" :key="c.key" class="row">
         <span>{{ c.label }}</span>
         <span class="num" :class="{ bad: data[c.key] !== 0 }">{{ data[c.key] }}</span>
@@ -41,7 +41,7 @@ const state = computed(() => {
 
 <style scoped>
 .health { display: inline-flex; align-items: center; gap: 6px; cursor: default; white-space: nowrap; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: #c0c4cc; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
 .dot.ok { background: var(--el-color-success); }
 .dot.bad { background: var(--level-high); }
 .row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 13px; }

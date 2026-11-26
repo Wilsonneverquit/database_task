@@ -1,10 +1,8 @@
 // 请求封装：照《前端交接文档》附录 C 的写法，返回 body.data，code≠0 抛错，401 统一跳登录。
 // VITE_API_MODE=mock 时走前端内置模拟服务，real 时请求 VITE_API_BASE（默认 http://127.0.0.1:5000）。
 
-import { mockRequest } from './mock/server'
-
-export const API_MODE = import.meta.env.VITE_API_MODE || 'mock'
-const BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:5000'
+export const API_MODE = 'real'
+const BASE = import.meta.env.VITE_API_BASE || ''
 const TOKEN_KEY = 'risk_alert_token'
 
 export function getToken() {
@@ -29,15 +27,13 @@ async function request(method, path, body) {
   const token = getToken()
   let status
   let payload
-  if (API_MODE === 'mock') {
-    ;({ status, body: payload } = await mockRequest(method, path, { body, token }))
-  } else {
+  {
     let res
     try {
       res = await fetch(BASE + path, {
         method,
-        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-        body: body === undefined ? undefined : JSON.stringify(body),
+        headers: { ...(body instanceof FormData ? {} : {'Content-Type': 'application/json'}), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
       })
     } catch {
       throw new RequestError(`无法连接后端 ${BASE}，请确认服务已启动并开启 CORS`, 0, -1)
@@ -65,6 +61,22 @@ const post = (path, body) => request('POST', path, body)
 
 export const api = {
   login: (body) => post('/api/login', body),
+  logout: () => request('DELETE', '/api/auth/sessions/current'),
+  chain: (id) => get(`/api/clues/${id}/chain`),
+  evidenceSubjects: (p) => get('/api/evidence/subjects',p),
+  evidenceEvents: (p) => get('/api/evidence/events',p),
+  mapReplayEvents: (p) => get('/api/map-replay/events',p),
+  mapReplayChain: (id) => get(`/api/map-replay/chains/${id}`),
+  people: (p) => get('/api/person-risks', p),
+  personTimeline: (id,p) => get(`/api/persons/${id}/timeline`,p),
+  trends: (p) => get('/api/risk-trends',p),
+  dataCatalog: () => get('/api/data'),
+  dataQuality: () => get('/api/data-quality'),
+  dataRows: (resource,p) => get(`/api/data/${resource}`,p),
+  createRow: (resource,b) => post(`/api/data/${resource}`,b),
+  updateRow: (resource,id,b) => patch(`/api/data/${resource}/${id}`,b),
+  deleteRow: (resource,id) => request('DELETE',`/api/data/${resource}/${id}`),
+  importRows: (resource,file) => { const form=new FormData();form.append('file',file);return post(`/api/data/${resource}/imports`,form) },
   dicts: () => get('/api/dicts'),
   overview: () => get('/api/overview'), //                                    1
   regionRisk: (p) => get('/api/region-risk', p), //                           2
@@ -91,5 +103,5 @@ export const api = {
   setParam: (key, body) => patch(`/api/params/${key}`, body), //              22
   cases: (p) => get('/api/cases', p), //                                      23
   health: () => get('/api/health'), //                                        24
-  riskMap: () => get('/api/risk-map'), //                                     25 风险地图
+  riskMap: (p) => get('/api/risk-map',p), //                                   25 风险地图
 }

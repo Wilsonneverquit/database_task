@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:dashboard": "node tests/dashboard.mjs"
+    "test:dashboard": "node tests/dashboard.mjs",
+    "test:replay": "node tests/clue-replay.mjs && node tests/curved-map.mjs && node tests/area-landmarks.mjs && node tests/landmark-geometry.mjs && node tests/map-navigation.mjs",
+    "test:real": "node tests/real-backend.mjs",
+    "test:discovery": "node tests/discovery.mjs",
+    "test:map-ui": "node tests/map-presentation.mjs"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -20,6 +24,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",
+    "playwright": "1.56.1",
     "vite": "^5.4.10"
   }
 }

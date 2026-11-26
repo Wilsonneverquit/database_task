@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-26T00:00:00+08:00",
+  "title": "Design System: 多风险特征预警系统",
+  "extensions": {
+    "shadows": [
+      {
+        "name": "overlay",
+        "value": "0 12px 36px #02071260",
+        "purpose": "浮动菜单与弹出层"
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.22,1,.36,1)",
+        "purpose": "控件状态变化；遵守减少动态效果设置"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "navigation-drawer",
+        "value": "900px"
+      },
+      {
+        "name": "overview-stack",
+        "value": "1000px"
+      },
+      {
+        "name": "evidence-source-stack",
+        "value": "1100px"
+      },
+      {
+        "name": "evidence-single-column",
+        "value": "800px"
+      },
+      {
+        "name": "compact",
+        "value": "600px"
+      }
+    ]
+  },
+  "narrative": {
+    "northStar": "深蓝石墨研判工作台",
+    "overview": "深色分层界面承托明亮城市地图与可追溯证据。",
+    "keyCharacteristics": [
+      "语义风险色独立",
+      "地图自然明亮",
+      "紧凑清晰的操作面板"
+    ],
+    "dos": [
+      "复用全站主题变量",
+      "保留技术说明与人工复核边界"
+    ],
+    "donts": [
+      "未经批准不增加流动粒子",
+      "不改变风险阈值与评分口径"
+    ]
+  }
+}
