@@ -85,7 +85,7 @@ try{
   await page.setViewportSize({width:1440,height:1000})
   await login('dataop')
   await page.goto(base+'/data')
-  await page.getByText('原始数据审计与修正说明',{exact:true}).waitFor()
+  await page.getByText('数据来源与清洗记录',{exact:true}).waitFor()
   await page.getByRole('button',{name:'新增记录',exact:true}).waitFor()
   await page.locator('.toolbar .el-select').click()
   await page.getByRole('option',{name:'人员',exact:true}).click()

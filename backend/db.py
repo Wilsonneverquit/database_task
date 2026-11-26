@@ -29,11 +29,30 @@ class JSONProvider(DefaultJSONProvider):
         return DefaultJSONProvider.default(value)
 
 
-def connect(database=True):
+def database_name(source):
+    if source == 'demo':
+        name = os.getenv('DB_NAME', 'risk_alert_demo')
+        if name.lower() == 'risk_alert_real':
+            raise ValueError('DB_NAME for demo must differ from risk_alert_real')
+        return name
+    if source == 'real':
+        return 'risk_alert_real'
+    raise ValueError('未知的数据源')
+
+
+def connect(database=True, *, source='demo'):
+    # CLI commands keep targeting demo unless they explicitly select the real store.
+    name = database_name(source)
+    prefix = 'REAL_DB_' if source == 'real' else 'DB_'
+    password = os.getenv(prefix + 'PASSWORD')
+    if source == 'real' and password is None:
+        secret = ROOT / '.runtime' / 'real-db-password'
+        password = secret.read_text(encoding='ascii').strip() if secret.exists() else ''
     return pymysql.connect(
-        host=os.getenv('DB_HOST', '127.0.0.1'), port=int(os.getenv('DB_PORT', '3307')),
-        user=os.getenv('DB_USER', 'root'), password=os.getenv('DB_PASSWORD', ''),
-        database=os.getenv('DB_NAME', 'risk_alert_demo') if database else None,
+        host=os.getenv(prefix + 'HOST', '127.0.0.1'),
+        port=int(os.getenv(prefix + 'PORT', '3308' if source == 'real' else '3307')),
+        user=os.getenv(prefix + 'USER', 'root'), password=password or '',
+        database=name if database else None,
         charset='utf8mb4', collation='utf8mb4_0900_as_cs', cursorclass=pymysql.cursors.DictCursor,
         autocommit=False, connect_timeout=5, read_timeout=120, write_timeout=120,
         init_command="SET time_zone = '+08:00'",
@@ -42,7 +61,7 @@ def connect(database=True):
 
 def get_db():
     if 'db' not in g:
-        g.db = connect()
+        g.db = connect(source=g.get('data_source', 'demo'))
     return g.db
 
 

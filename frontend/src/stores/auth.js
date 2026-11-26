@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { api, setToken } from '@/api'
+import { api, setToken, sourceKey } from '@/api'
 import { ACTION_ROLES, BLOCK_ROLES, PAGE_ROLES, hasAny } from '@/constants/permissions'
 
-const USER_KEY = 'risk_alert_user'
+const USER_KEY = sourceKey('risk_alert_user')
 
 function loadUser() {
   try { return JSON.parse(localStorage.getItem(USER_KEY)) } catch { return null }

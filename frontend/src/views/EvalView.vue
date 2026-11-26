@@ -32,7 +32,7 @@
         </section>
       </div>
     </AsyncState>
-    <el-alert type="warning" :closable="false" show-icon title="以上为模拟数据上的指标，仅用于验证研判流程，不代表真实执法效果。" />
+    <el-alert type="warning" :closable="false" show-icon title="指标基于当前数据库中有标签的样本计算，缺少标签时无法评估。" />
   </div>
 </template>
 <script setup>

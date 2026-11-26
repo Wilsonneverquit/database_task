@@ -9,7 +9,7 @@ import pymysql
 from werkzeug.security import check_password_hash
 from werkzeug.exceptions import HTTPException
 from .db import JSONProvider, ROOT, get_db, query, one, execute, insert, transaction, audit, now
-from .presentation import describe_score
+from .presentation import describe_score, quality_payload
 
 
 class APIError(Exception):
@@ -69,6 +69,17 @@ def create_app():
     app=Flask(__name__,static_folder=None)
     app.json=JSONProvider(app)
     app.config['MAX_CONTENT_LENGTH']=8*1024*1024
+    default_source = os.getenv('DATA_SOURCE', 'demo')
+    if default_source not in ('demo', 'real'):
+        raise ValueError('DATA_SOURCE must be demo or real')
+
+    @app.before_request
+    def route_database():
+        if request.path.startswith('/api/') and request.method != 'OPTIONS':
+            source = request.headers.get('X-Data-Source', default_source)
+            if source not in ('demo', 'real'):
+                fail('数据源必须为 demo 或 real')
+            g.data_source = source
 
     @app.before_request
     def authenticate():
@@ -86,7 +97,11 @@ def create_app():
         if origin in ('http://127.0.0.1:5173','http://localhost:5173'):
             response.headers['Access-Control-Allow-Origin']=origin
             response.headers['Vary']='Origin'
-        response.headers['Access-Control-Allow-Headers']='Content-Type,Authorization'
+        response.headers['Access-Control-Allow-Headers']='Content-Type,Authorization,X-Data-Source'
+        if 'data_source' in g:
+            response.headers['X-Data-Source']=g.data_source
+            response.headers['Access-Control-Expose-Headers']='X-Data-Source'
+            response.vary.add('X-Data-Source')
         response.headers['Access-Control-Allow-Methods']='GET,POST,PATCH,DELETE,OPTIONS'
         response.headers['Cache-Control']='no-store' if request.path.startswith('/api/') else 'no-cache'
         return response
@@ -381,7 +396,11 @@ def create_app():
     @app.get('/api/data-quality')
     @roles('R_DATA','R_ADMIN','R_FEATURE','R_TEACHER')
     def quality():
-        return ok([decode(r,'report_json') for r in query('SELECT * FROM data_quality_report ORDER BY report_id DESC')])
+        rows=query('SELECT * FROM data_quality_report ORDER BY report_id DESC')
+        for row in rows:
+            decode(row,'report_json')
+            row['report_json']=quality_payload(row['report_json'])
+        return ok(rows)
 
     @app.get('/api/risk-map')
     @roles('R_ANALYST','R_TEACHER')
@@ -423,6 +442,10 @@ UNION ALL SELECT d.person_id,'driver_observation',t.track_id,t.pass_time,CONCAT(
     register_resources(app)
     from .discovery import register_discovery
     register_discovery(app)
+
+    @app.get('/data-source-config.js')
+    def client_config():
+        return app.response_class('window.RISK_DEFAULT_SOURCE='+json.dumps(default_source)+';',mimetype='application/javascript')
 
     @app.get('/')
     @app.get('/<path:path>')

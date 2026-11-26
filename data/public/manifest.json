@@ -1,0 +1,67 @@
+{
+  "format": 1,
+  "snapshot_sha256": "99f53d0529d7f3076e4d1bca759e4d8dde46df84a8daf8854d5e82c8fe3b6ecc",
+  "counts": {
+    "area_info": 82,
+    "place_info": 319,
+    "person_info": 2588,
+    "taxi_order": 4998,
+    "receipt_summary": 4
+  },
+  "sources": [
+    {
+      "url": "https://ratings.food.gov.uk/api/open-data-files/FHRS027en-GB.xml",
+      "retrieved_utc": "2026-11-26T07:20:16+00:00",
+      "bytes": 1462301,
+      "sha256": "d764e103a89fa9c613317df1c88a8562e5489e66c574586730580a3dbcc0ca9f",
+      "publisher": "Food Standards Agency / Cambridge City",
+      "license": "Open Government Licence",
+      "terms": "https://ratings.food.gov.uk/terms-and-conditions",
+      "tables": [
+        "area_info",
+        "place_info"
+      ],
+      "selection": {
+        "input": 1464,
+        "excluded": {
+          "other_category": 869,
+          "no_unambiguous_urban_street_or_coordinates": 275,
+          "field_limits": 1
+        },
+        "extract_date": "2026-11-26"
+      }
+    },
+    {
+      "url": "https://data.mendeley.com/public-files/datasets/wp5gkjbvb9/files/a9f71dee-1b26-4008-a3f1-a79f48d320ca/file_downloaded",
+      "retrieved_utc": "2026-11-26T07:20:29+00:00",
+      "bytes": 1048576,
+      "sha256": "577227832b19daeb17d513f36ffbb5999a6158403564ebf893dd9cecd32b69d0",
+      "publisher": "RideAustin; Zuniga-Garcia et al., Mendeley Data v1",
+      "license": "CC0 1.0",
+      "terms": "https://data.mendeley.com/datasets/wp5gkjbvb9/1",
+      "tables": [
+        "person_info",
+        "taxi_order"
+      ],
+      "selection": {
+        "input": 5008,
+        "outside_austin_sample_box": 9,
+        "incomplete_or_invalid": 1
+      },
+      "byte_range": "0-1048575"
+    },
+    {
+      "url": "https://data.texas.gov/resource/g5bj-yb6k.json?%24select=obligation_end_date%2Ccount%28%2A%29+as+reports%2Csum%28total_sales_receipts%29+as+sales_usd&%24where=location_city%3D%27AUSTIN%27+AND+location_state%3D%27TX%27+AND+obligation_end_date+between+%272016-06-01%27+and+%272016-09-30T23%3A59%3A59%27&%24group=obligation_end_date&%24order=obligation_end_date",
+      "retrieved_utc": "2026-11-26T07:20:32+00:00",
+      "bytes": 378,
+      "sha256": "79029a738f748acbc6a871ff45c4b11dacb8c96cfc979d0c059a8f155d898577",
+      "publisher": "Texas Comptroller of Public Accounts",
+      "license": "Public Domain",
+      "terms": "https://data.texas.gov/dataset/g5bj-yb6k",
+      "tables": [
+        "data_quality_report"
+      ],
+      "selection": "Austin TX, Jun–Sep 2016, month totals only"
+    }
+  ]
+}

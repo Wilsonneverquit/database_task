@@ -1,6 +1,6 @@
 <template>
   <div class="page workbench">
-    <div class="page-head"><div><p class="eyebrow">数据驱动 · 证据可追溯</p><h2>研判工作台</h2><p class="sub">从区域异常找到人员事件，再沿原始记录核查。观察数据：2026-11-01 至 2026-11-24。</p></div><el-button @click="refresh">刷新工作台</el-button></div>
+    <div class="page-head"><div><p class="eyebrow">数据驱动 · 证据可追溯</p><h2>研判工作台</h2><p class="sub">{{ DATA_SOURCE==='real' ? '公开订单与场所来自独立数据集。可在数据管理中查阅原始记录和来源。' : '从区域异常找到人员事件，再沿原始记录核查。' }} <router-link v-if="DATA_SOURCE==='real' && auth.canPage('data')" to="/data">查看公开数据 →</router-link></p></div><el-button @click="refresh">刷新工作台</el-button></div>
     <AsyncState :loading="summary.loading.value" :error="summary.error.value" :data="summary.data.value" @retry="summary.run"><template v-if="summary.data.value">
       <div class="stat-grid"><div class="stat"><div class="label">累计生成线索</div><div class="value">{{ summary.data.value.clue_total }}</div><div class="foot">所有成功批次</div></div><div class="stat"><div class="label">待核查 / 核查中</div><div class="value">{{ summary.data.value.clue_open }} <small>/ {{ summary.data.value.clue_checking }}</small></div><div class="foot">需要人工处理</div></div><div class="stat"><div class="label">已完成核查</div><div class="value">{{ summary.data.value.clue_confirmed + summary.data.value.clue_excluded }}</div><div class="foot">确认 {{ summary.data.value.clue_confirmed }} · 排除 {{ summary.data.value.clue_excluded }}</div></div><div class="stat"><div class="label">风险指数</div><div class="value">0–100</div><div class="foot">连续因子 · 40 / 70 分级 · 非发生概率</div></div></div>
     </template></AsyncState>
@@ -14,7 +14,7 @@
 </template>
 <script setup>
 import {computed,ref,watch} from 'vue'
-import {api} from '@/api'
+import {api,DATA_SOURCE} from '@/api'
 import {useAuthStore} from '@/stores/auth'
 import {useAsync} from '@/composables/useAsync'
 import {allPages} from '@/utils/dashboard'

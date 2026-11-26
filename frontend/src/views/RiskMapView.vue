@@ -13,7 +13,7 @@
           </div>
           <div class="layer-controls" role="group" aria-label="地图图层"><button :aria-pressed="showBuildings" @click="showBuildings=!showBuildings"><el-icon><OfficeBuilding /></el-icon>街区体块</button><button :aria-pressed="showLinks" @click="showLinks=!showLinks"><el-icon><Connection /></el-icon>空间链路</button><button :aria-pressed="fallback" aria-label="切换二维显示" @click="streetMap?.toggleFlat()">{{ fallback ? '返回三维' : '二维模式' }}</button></div>
           <p class="map-help">拖动平移 · 滚轮缩放<span v-if="!fallback"> · 右键拖动旋转</span></p>
-          <details><summary>技术说明与示例范围</summary><p>按区域以红色深浅展示风险等级（颜色越深风险越高），拖动时间轴查看各观察时段的风险分布变化。坐标取自区域表 area_info 的经纬度字段。</p><p>示例城市（虚构）· 坐标为示例值，仅用于教学演示。</p><p>街道与链路为教学示意，链路表示空间邻近关系，无方向，不代表人员往来或风险传播。每个热斑表示一个区域的时段指数评分，大小不表示真实覆盖范围。</p></details>
+          <details><summary>技术说明与示例范围</summary><p>按区域以红色深浅展示风险等级（颜色越深风险越高），拖动时间轴查看各观察时段的风险分布变化。坐标取自区域表 area_info 的经纬度字段。</p><p>{{ DATA_SOURCE==='real'?'区域中心取所在街道入样场所坐标的均值。':'示例城市（虚构）· 坐标仅用于教学演示。' }}</p><p>街道与链路为教学示意，链路表示空间邻近关系，无方向，不代表人员往来或风险传播。每个热斑表示一个区域的时段指数评分，大小不表示真实覆盖范围。</p></details>
         </header>
         <div class="map-tools" role="toolbar" aria-label="地图快捷工具">
           <el-tooltip content="刷新地图" placement="left"><el-button :icon="Refresh" :loading="loading" type="primary" aria-label="刷新地图" @click="pause();load()" /></el-tooltip>
@@ -42,7 +42,7 @@
 <script setup>
 import {computed,nextTick,onBeforeUnmount,onMounted,ref,watch} from 'vue'
 import {VideoPause,VideoPlay,Refresh,Sort,InfoFilled,Aim,ZoomIn,ZoomOut,RefreshLeft,OfficeBuilding,Connection} from '@element-plus/icons-vue'
-import {api} from '@/api'
+import {api,DATA_SOURCE} from '@/api'
 import {useAsync} from '@/composables/useAsync'
 import {useAuthStore} from '@/stores/auth'
 import {fixed} from '@/utils/format'

@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test:dashboard": "node tests/dashboard.mjs",
     "test:real": "node tests/real-backend.mjs",
-    "test:discovery": "node tests/discovery.mjs"
+    "test:discovery": "node tests/discovery.mjs",
+    "test:sources": "node tests/data-sources.mjs"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",

@@ -2,6 +2,8 @@
 
 Flask + PyMySQL + MySQL，Vue 3 + Element Plus + ECharts。默认使用真实后端和 `risk_alert_demo` 演示库，原始 `risk_alert` 与旧 SQL 保留，不在启动时清空。
 
+本版另提供独立的公开数据库 `risk_alert_real`。打开 `/login?source=real` 查看公开订单、场所和采集说明，使用 `/login?source=demo` 体验完整模拟案例。首次安装、真实库登录方式、数据来源和接口测试见[公开数据与双库操作手册](docs/public-database.md)。
+
 ## Windows 启动
 
 需要 Python 3.10+、Node.js 18+、MySQL 8+ 程序。项目自带启动脚本会用本机 MySQL 程序启动独立实例（127.0.0.1:3307），数据保存在 `.runtime/mysql`，不注册系统服务。

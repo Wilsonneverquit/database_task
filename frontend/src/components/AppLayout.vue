@@ -29,7 +29,7 @@
           <el-tooltip v-if="API_MODE === 'mock'" content="后端未就绪，当前使用前端内置的模拟数据（取自示例库）" placement="bottom">
             <el-tag type="warning" effect="plain">模拟数据模式</el-tag>
           </el-tooltip>
-          <el-tag v-else type="success" effect="plain">真实后端模式</el-tag>
+          <el-tag v-else type="success" effect="plain">{{ DATA_SOURCE === 'real' ? '公开数据库' : '模拟数据库' }}</el-tag>
           <el-dropdown trigger="click" @command="onCommand">
             <button type="button" class="user" aria-label="用户菜单">
               <el-icon><User /></el-icon>
@@ -52,7 +52,7 @@
       </el-main>
 
       <el-footer class="footer" height="auto">
-        <span>模拟数据，仅用于教学演示，不作执法依据。系统只输出风险等级、待核查线索与命中理由，不作定性结论，所有线索须人工复核。</span>
+        <span>{{ DATA_SOURCE === 'real' ? '公开数据用于课程研究。来源及采集范围见数据管理。' : '模拟数据，仅用于教学演示。' }}所有线索须人工复核。</span>
         <HealthLight />
       </el-footer>
     </el-container>
@@ -64,7 +64,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { RefreshLeft, SwitchButton } from '@element-plus/icons-vue'
-import { API_MODE, api } from '@/api'
+import { API_MODE, DATA_SOURCE, api } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import { ROLE_LABEL } from '@/constants/enums'
 import HealthLight from './HealthLight.vue'

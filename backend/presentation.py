@@ -12,3 +12,13 @@ def describe_score(score):
         status='low_sample';reason='已有活动记录，但样本量未达到所属规则门槛，当前未评分。'
     label=({1:'低风险',2:'中风险',3:'高风险'}.get(score.get('risk_level'),'已评分') if status=='scored' else {'source_gap':'采集覆盖不足','no_activity':'暂无消费活动','low_sample':'样本不足'}[status])
     return score|dict(risk_status=status,status_reason=reason,status_label=label)
+def quality_payload(report):
+    """Keep the existing audit fields available to clients of both sources."""
+    if report.get('kind')!='public_snapshot':
+        return {**report, 'kind':'demo_audit', 'manifest':None, 'receipt_summary':[]}
+    counts = report['manifest']['counts']
+    tables = {k:n for k,n in counts.items() if k!='receipt_summary'}
+    return {**report, 'source':report['manifest']['snapshot_sha256'], 'tables':tables,
+            'rows':sum(tables.values()), 'distinct_region_scores':0,
+            'completed_orders_without_completion_time':0, 'region_scores_without_calendar_window':0,
+            'policy':'公开快照仅导入通过时间校验的完成订单。快照不包含评分。'}

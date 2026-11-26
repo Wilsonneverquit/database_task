@@ -9,11 +9,12 @@
           <li>达到阈值生成<strong>待核查线索</strong>，交人工核实</li>
           <li>核查结论回流，标记被否定的特征，修正下一轮权重</li>
         </ul>
-        <p class="boundary">系统只输出风险等级、待核查线索与命中理由，不作定性结论。数据全部由脚本模拟生成，不含真实个人信息。</p>
+        <p class="boundary">{{ DATA_SOURCE === 'real' ? '公开数据包含场所名录、匿名网约车订单和城市月度销售统计。' : '演示数据由业务规则生成，可用于体验完整的研判流程。' }}</p>
       </div>
 
       <el-card class="form-card" shadow="never">
-        <h3>登录</h3>
+        <h3>{{ DATA_SOURCE === 'real' ? '公开数据库' : '模拟数据库' }}登录</h3>
+        <a :href="DATA_SOURCE === 'real' ? '/login?source=demo' : '/login?source=real'">切换到{{ DATA_SOURCE === 'real' ? '模拟' : '公开' }}数据库</a>
         <el-form ref="formRef" :model="form" :rules="rules" label-position="top" @submit.prevent="submit">
           <el-form-item label="用户名" prop="username">
             <el-input v-model="form.username" placeholder="如 analyst1" :prefix-icon="User" autocomplete="username" />
@@ -24,7 +25,7 @@
           <el-button type="primary" native-type="submit" :loading="loading" class="full">登录</el-button>
         </el-form>
 
-        <div class="demo">
+        <div v-if="DATA_SOURCE === 'demo'" class="demo">
           <div class="muted small">演示账号（取自示例库，口令均为 123456），点击填入：</div>
           <div class="accounts">
             <el-button v-for="a in DEMO" :key="a.username" size="small" @click="fill(a.username)">
@@ -42,7 +43,7 @@ import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Lock, User } from '@element-plus/icons-vue'
-import { API_MODE } from '@/api'
+import { DATA_SOURCE } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 
 const DEMO = [

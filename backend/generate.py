@@ -33,19 +33,41 @@ def audit_original():
             'policy':'Original files preserved; derived scores not imported. Demo source events rebuilt with chronological validation.'}
 
 
+ACCOUNT_NAMES = ('admin','analyst1','analyst2','featop','teacher','dataop')
+
+
+def initialize_accounts(conn, created, passwords):
+    roles = [('R_ANALYST','研判员'),('R_DATA','数据管理员'),('R_FEATURE','特征管理员'),('R_ADMIN','系统管理员'),('R_TEACHER','教师/评审')]
+    insert_many('sys_role',[dict(role_id=k,role_name=v,role_desc=v+'业务权限',status=1) for k,v in roles],conn)
+    users=[('admin',['R_ADMIN']),('analyst1',['R_ANALYST','R_TEACHER']),('analyst2',['R_ANALYST']),('featop',['R_FEATURE']),('teacher',['R_TEACHER']),('dataop',['R_DATA'])]
+    for i,(name,rs) in enumerate(users,1):
+        uid=f'U{i:04d}'
+        insert('sys_user',dict(user_id=uid,username=name,password_hash=generate_password_hash(passwords[name]),salt='managed-hash-v1',real_name=dict(admin='系统管理员',analyst1='研判员甲',analyst2='研判员乙',featop='特征管理员',teacher='课程评审',dataop='数据管理员')[name],status=1,created_at=created),conn)
+        insert_many('sys_user_role',[dict(user_id=uid,role_id=r) for r in rs],conn)
+
+
+def initialize_rules(conn, cutoff, vid, draft, case_count=0, control_count=0):
+    for fid,name in NAMES.items():
+        source={'F001':'consume_record','F002':'consume_record','F003':'taxi_order','F004':'vehicle_track','F005':'vehicle_track','F006':'taxi_order','F008':'v_case_history'}[fid]
+        insert('feature_def',dict(feature_id=fid,feature_code='DYNAMIC_'+fid,feature_name=name,risk_type=1,feature_cat=5 if fid=='F006' else 4,direction=2 if fid=='F006' else 1,object_scope=3,value_type=2,src_table='case_info',match_src=source,match_expr='连续因子；原始值 / 历史冻结基线，截断到 0–1；近三小时按 90 分钟时间常数衰减',time_window_min=180,min_sample=1,status=1,description='风险指数贡献与统计对数优势比分开保存；驾驶人身份不能由车辆归属推断'),conn)
+    baseline=build_baseline(conn,cutoff)
+    insert('feature_version',dict(version_id=vid,risk_type=1,version_no='3.0',publish_status=0,based_case_cnt=case_count,based_ctrl_cnt=control_count,calc_at=cutoff,published_by='U0004',remark='连续因子风险指数；固定历史基线',created_at=cutoff,algorithm_version='continuous-v1',baseline_json=json.dumps(baseline)),conn)
+    insert('feature_version',dict(version_id=draft,risk_type=1,version_no='3.1',publish_status=0,based_case_cnt=0,based_ctrl_cnt=0,remark='供反馈修订与版本实验使用的草稿',created_at=cutoff,algorithm_version='continuous-v1'),conn)
+    for rid,obj,weights in [('R001',1,REGION),('R002',2,PERSON)]:
+        insert('judge_rule',dict(rule_id=rid,rule_name='区域逐小时风险指数' if obj==1 else '人员事件风险指数',risk_type=1,version_id=vid,judge_object=obj,min_sample=1,min_hit_cnt=2,low_threshold=40,high_threshold=70,counter_block=1,status=1,remark='0–100 指数，不是发生概率',created_at=cutoff,config_json=json.dumps({'weights':weights,'version_id':vid})),conn)
+        insert_many('rule_feature',[dict(rule_id=rid,feature_id=f,is_required=0,sort_no=i) for i,(f,w) in enumerate(weights)],conn)
+    from .learning import recalculate
+    recalculate(conn,vid,'U0004')
+    execute('UPDATE feature_version SET publish_status=1 WHERE version_id=%s',(vid,),conn)
+
+
 def generate(conn, seed=20261125, light=False):
     if query('SELECT user_id FROM sys_user LIMIT 1',conn=conn):
         raise ValueError('演示库已有数据；为避免覆盖，请使用显式 reset-demo 命令')
     rng = random.Random(seed)
     original_report=audit_original()
     insert('data_quality_report',dict(source_name='原始演示种子审计',report_json=json.dumps(original_report,ensure_ascii=False)),conn)
-    roles = [('R_ANALYST','研判员'),('R_DATA','数据管理员'),('R_FEATURE','特征管理员'),('R_ADMIN','系统管理员'),('R_TEACHER','教师/评审')]
-    insert_many('sys_role',[dict(role_id=k,role_name=v,role_desc=v+'业务权限',status=1) for k,v in roles],conn)
-    users=[('admin',['R_ADMIN']),('analyst1',['R_ANALYST','R_TEACHER']),('analyst2',['R_ANALYST']),('featop',['R_FEATURE']),('teacher',['R_TEACHER']),('dataop',['R_DATA'])]
-    for i,(name,rs) in enumerate(users,1):
-        uid=f'U{i:04d}'
-        insert('sys_user',dict(user_id=uid,username=name,password_hash=generate_password_hash('123456'),salt='managed-hash-v1',real_name=dict(admin='系统管理员',analyst1='研判员甲',analyst2='研判员乙',featop='特征管理员',teacher='课程评审',dataop='数据管理员')[name],status=1,created_at=START),conn)
-        insert_many('sys_user_role',[dict(user_id=uid,role_id=r) for r in rs],conn)
+    initialize_accounts(conn, START, dict.fromkeys(ACCOUNT_NAMES,'123456'))
     params=[('history_cutoff','2026-11-01 00:00:00'),('dataset_start',str(START)),('dataset_end',str(END)),('dataset_seed',str(seed)),('data_provenance','fictional_event_simulation')]
     insert_many('param_config',[dict(param_key=k,param_value=v,param_type=3,param_desc='课程演示配置',updated_at=START) for k,v in params],conn)
     names=['中心商务区','老城餐饮街','东门居住区','南站交通区','大学生活区','滨河休闲区','西城工业区','北高速出入口','城南社区','东城商业街','夜市步行街','近郊乡镇']
@@ -134,19 +156,8 @@ def generate(conn, seed=20261125, light=False):
     insert_many('case_info',cases,conn)
     insert_many('control_person',controls,conn)
     insert_many('ingest_window',[dict(source_type=s,window_start=START,window_end=END,available_at=START,coverage=1) for s in ['consume','track','order']],conn)
-    for fid,name in NAMES.items():
-        source={'F001':'consume_record','F002':'consume_record','F003':'taxi_order','F004':'vehicle_track','F005':'vehicle_track','F006':'taxi_order','F008':'v_case_history'}[fid]
-        insert('feature_def',dict(feature_id=fid,feature_code='DYNAMIC_'+fid,feature_name=name,risk_type=1,feature_cat=5 if fid=='F006' else 4,direction=2 if fid=='F006' else 1,object_scope=3,value_type=2,src_table='case_info',match_src=source,match_expr='连续因子；原始值 / 历史冻结基线，截断到 0–1；近三小时按 90 分钟时间常数衰减',time_window_min=180,min_sample=1,status=1,description='风险指数贡献与统计对数优势比分开保存；驾驶人身份不能由车辆归属推断'),conn)
-    baseline=build_baseline(conn,CUTOFF)
+    initialize_rules(conn,CUTOFF,'V20261101_D1','V20261101_D2',len(cases),len(controls))
     vid='V20261101_D1'
-    insert('feature_version',dict(version_id=vid,risk_type=1,version_no='3.0',publish_status=0,based_case_cnt=len(cases),based_ctrl_cnt=len(controls),calc_at=CUTOFF,published_by='U0004',remark='连续因子风险指数；固定历史基线',created_at=CUTOFF,algorithm_version='continuous-v1',baseline_json=json.dumps(baseline)),conn)
-    insert('feature_version',dict(version_id='V20261101_D2',risk_type=1,version_no='3.1',publish_status=0,based_case_cnt=0,based_ctrl_cnt=0,remark='供反馈修订与版本实验使用的草稿',created_at=CUTOFF,algorithm_version='continuous-v1'),conn)
-    for rid,obj,weights in [('R001',1,REGION),('R002',2,PERSON)]:
-        insert('judge_rule',dict(rule_id=rid,rule_name='区域逐小时风险指数' if obj==1 else '人员事件风险指数',risk_type=1,version_id=vid,judge_object=obj,min_sample=1,min_hit_cnt=2,low_threshold=40,high_threshold=70,counter_block=1,status=1,remark='0–100 指数，不是发生概率',created_at=CUTOFF,config_json=json.dumps({'weights':weights,'version_id':vid})),conn)
-        insert_many('rule_feature',[dict(rule_id=rid,feature_id=f,is_required=0,sort_no=i) for i,(f,w) in enumerate(weights)],conn)
-    from .learning import recalculate
-    recalculate(conn,vid,'U0004')
-    execute('UPDATE feature_version SET publish_status=1 WHERE version_id=%s',(vid,),conn)
     # Calculate all observation hours with one batch per date and object type.
     for day in range((END-CUTOFF).days):
         start=CUTOFF+timedelta(days=day)

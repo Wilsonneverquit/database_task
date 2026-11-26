@@ -1,9 +1,18 @@
 // 请求封装：照《前端交接文档》附录 C 的写法，返回 body.data，code≠0 抛错，401 统一跳登录。
-// VITE_API_MODE=mock 时走前端内置模拟服务，real 时请求 VITE_API_BASE（默认 http://127.0.0.1:5000）。
-
 export const API_MODE = 'real'
 const BASE = import.meta.env.VITE_API_BASE || ''
-const TOKEN_KEY = 'risk_alert_token'
+function selectSource() {
+  const requested = new URLSearchParams(location.search).get('source')
+  if (requested === 'demo' || requested === 'real') {
+    sessionStorage.setItem('risk_data_source', requested)
+    return requested
+  }
+  if (requested !== null) return 'invalid'
+  return sessionStorage.getItem('risk_data_source') || import.meta.env.VITE_DATA_SOURCE || window.RISK_DEFAULT_SOURCE || 'demo'
+}
+export const DATA_SOURCE = selectSource()
+export const sourceKey = key => DATA_SOURCE === 'demo' ? key : key + '_' + DATA_SOURCE
+const TOKEN_KEY = sourceKey('risk_alert_token')
 
 export function getToken() {
   try { return localStorage.getItem(TOKEN_KEY) } catch { return null }
@@ -32,7 +41,7 @@ async function request(method, path, body) {
     try {
       res = await fetch(BASE + path, {
         method,
-        headers: { ...(body instanceof FormData ? {} : {'Content-Type': 'application/json'}), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        headers: { 'X-Data-Source': DATA_SOURCE, ...(body instanceof FormData ? {} : {'Content-Type': 'application/json'}), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
       })
     } catch {

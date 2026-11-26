@@ -19,6 +19,9 @@ if (-not $MySQLHome) {
     else { throw 'Pass -MySQLHome with your MySQL 8+ installation folder.' }
 }
 $taskMysqlExe = Join-Path $MySQLHome 'bin/mysqld.exe'
+if (Test-Path '.runtime/mysql-real/auto.cnf') {
+    & (Join-Path $PSScriptRoot 'real-instance.ps1') -Action start -MySQLHome $MySQLHome
+}
 $taskState = @{}
 if (Test-Path '.runtime/processes.json') {
     $taskOldState=Get-Content -LiteralPath '.runtime/processes.json' -Raw | ConvertFrom-Json
@@ -34,10 +37,10 @@ if (Test-Path '.runtime/processes.json') {
         }
     }
 }
-$taskConfigPort=& $taskPython -c 'from backend.db import ROOT; import os; print(os.getenv("DB_PORT","3307"))'
-$taskConfigHost=& $taskPython -c 'from backend.db import ROOT; import os; print(os.getenv("DB_HOST","127.0.0.1"))'
+$taskConfigPort='from backend.db import ROOT; import os; print(os.getenv("DB_PORT","3307"))' | & $taskPython -
+$taskConfigHost='from backend.db import ROOT; import os; print(os.getenv("DB_HOST","127.0.0.1"))' | & $taskPython -
 $taskPortCheck = 'import socket; s=socket.socket(); s.settimeout(1); print(s.connect_ex(("127.0.0.1",3307))==0); s.close()'
-$taskListening = & $taskPython -c $taskPortCheck
+$taskListening = $taskPortCheck | & $taskPython -
 if ($taskListening -ne 'True' -and $taskConfigPort -eq '3307' -and $taskConfigHost -eq '127.0.0.1') {
     if (-not (Test-Path '.runtime/mysql/auto.cnf')) {
         Push-Location '.runtime/mysql'
@@ -49,12 +52,12 @@ if ($taskListening -ne 'True' -and $taskConfigPort -eq '3307' -and $taskConfigHo
     $taskState.mysql = @{pid=$taskMysqlProcess.Id;started=$taskMysqlProcess.StartTime.ToUniversalTime().ToString('O')}
     for ($taskAttempt=0; $taskAttempt -lt 30; $taskAttempt++) {
         Start-Sleep -Milliseconds 500
-        if ((& $taskPython -c $taskPortCheck) -eq 'True') { break }
+        if (($taskPortCheck | & $taskPython -) -eq 'True') { break }
     }
 }
 & $taskPython -m backend.manage migrate
 if ($LASTEXITCODE -ne 0) { throw 'Migration failed. Check backend/.env or project MySQL log.' }
-$taskSeeded = & $taskPython -c 'from backend.db import connect,one; c=connect(); print(one("SELECT COUNT(*) n FROM sys_user",conn=c)["n"]); c.close()'
+$taskSeeded = 'from backend.db import connect,one; c=connect(); print(one("SELECT COUNT(*) n FROM sys_user",conn=c)["n"]); c.close()' | & $taskPython -
 if ($taskSeeded -eq '0') {
     & $taskPython -m backend.manage seed
     if ($LASTEXITCODE -ne 0) { throw 'Dataset loading failed; see the error above.' }
